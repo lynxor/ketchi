@@ -11,6 +11,12 @@ import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConn
 import _root_.java.sql.{Connection, DriverManager}
 import _root_.za.co.lastminute.model._
 
+import  _root_.za.co.lastminute.model.generic_ad._
+import net.liftweb.mongodb.DefaultMongoIdentifier
+import net.liftweb.mongodb.MongoAddress
+import net.liftweb.mongodb.MongoDB
+import net.liftweb.mongodb.MongoHost
+
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -18,31 +24,22 @@ import _root_.za.co.lastminute.model._
  */
 class Boot {
   def boot {
-    if (!DB.jndiJdbcConnAvailable_?) {
-      val vendor = 
-	new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver",
-			     Props.get("db.url") openOr 
-			     "jdbc:h2:lift_proto.db;AUTO_SERVER=TRUE",
-			     Props.get("db.user"), Props.get("db.password"))
 
-      LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
-
-      DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
-    }
-
+    // DB.defineConnectionManager(DefaultConnectionIdentifier, MySqlManager)
+    MongoDB.defineDb(DefaultMongoIdentifier, MongoAddress(MongoHost("localhost", 27017), "test_direct"))
     // where to search snippet
     LiftRules.addToPackages("za.co.lastminute")
-    Schemifier.schemify(true, Schemifier.infoF _, User)
-
+   
     // Build SiteMap
     def sitemap() = SiteMap(
      
-      Menu("Home") / "index" >> User.AddUserMenusAfter, // Simple menu form
+      Menu("Home") / "index" >>  User.AddUserMenusAfter,
       // Menu with special Link
        Menu.i("Help") / "static"  / "help",
-       Menu.i("Contact") / "static" / "contact")
-
-    LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
+       Menu.i("Contact") / "static" / "contact",
+       Menu.i("Listing") / "generic_ads" / "listing",
+     Menu.i("Create generic ad") / "generic_ads" / "create")
+     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
     /*
      * Show the spinny image when an Ajax call starts
@@ -50,6 +47,7 @@ class Boot {
     LiftRules.ajaxStart =
       Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
 
+    LiftRules.loggedInTest = Full(() => User.loggedIn_?)
     /*
      * Make the spinny image go away when it ends
      */
@@ -58,9 +56,9 @@ class Boot {
 
     LiftRules.early.append(makeUtf8)
 
-    LiftRules.loggedInTest = Full(() => User.loggedIn_?)
+    LiftRules.htmlProperties.default.set((r: Req) =>
+      new Html5Properties(r.userAgent))    
 
-    S.addAround(DB.buildLoanWrapper)
   }
 
   /**
