@@ -13,7 +13,7 @@
     <inceptionYear>2010</inceptionYear>
     <properties>
         <scala.version>2.8.1</scala.version>
-        <lift.version>2.3-SNAPSHOT</lift.version>
+        <lift.version>2.2</lift.version>
     <!-- Common plugin settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>

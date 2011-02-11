@@ -38,9 +38,13 @@ class Boot {
        Menu.i("Help") / "static"  / "help",
        Menu.i("Contact") / "static" / "contact",
        Menu.i("Listing") / "generic_ads" / "listing",
-     Menu.i("Create generic ad") / "generic_ads" / "create")
+       Menu.i("Preview") / "generic_ads" / "preview" >> Hidden,
+       Menu.i("Upload images") /"general" / "fileupload" >> If(() => User.loggedIn_?, S ? "Can't View now"),
+       Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_?, S ? "Can't View now"),
+       Menu.i("Create generic ad") / "generic_ads" / "create")
      LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
+    
     /*
      * Show the spinny image when an Ajax call starts
      */
@@ -53,6 +57,8 @@ class Boot {
      */
     LiftRules.ajaxEnd =
       Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
+
+    LiftRules.handleMimeFile = OnDiskFileParamHolder.apply
 
     LiftRules.early.append(makeUtf8)
 

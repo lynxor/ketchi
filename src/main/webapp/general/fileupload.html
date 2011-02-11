@@ -1,12 +1,11 @@
 <div id="main" class="lift:surround?with=default&at=content">
   <div>
-    Using Lift's SHtml.onSubmit, we've got better control
-    over the form processing.
+    Upload images
   </div>
 
   <div>
-    <form class="lift:FileUpload?form=post;multipart=true">
-      Select image: <input name="thefile" type="file"><br>
+    <form class="lift:FileUpload?form=post&multipart=true">
+      Select image: <input name="file" id="the_file"><br>
       <input value="Submit" type="submit">
     </form>
   </div>

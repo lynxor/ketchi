@@ -25,6 +25,7 @@ package za.co.lastminute {
 
       // comment this line out to require email validations
       override def skipEmailValidation = true
+
     }
 
     /**
@@ -32,7 +33,6 @@ package za.co.lastminute {
      */
     class User extends MegaProtoUser[User]{
       def meta = User // what's the "meta" server
-
     }
 
   }

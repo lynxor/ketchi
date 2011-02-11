@@ -4,3 +4,7 @@
     padding: 5px;
 
 }
+#map_canvas {
+    height: 400px;
+    width: 400px;
+}

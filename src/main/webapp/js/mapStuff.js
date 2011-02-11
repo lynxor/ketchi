@@ -1,0 +1,5 @@
+
+  function initializeCreateMap(elementId) {
+    
+  }
+

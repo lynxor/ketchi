@@ -1,16 +1,66 @@
 <div class="lift:surround?with=default&at=content">
-     
+
     <div>
         Create a new Ad
     </div>
     <div>
-        <form class="lift:form.ajax">
-            <div class="lift:CreateGenericAd">
-                Header: <input name="header" id="the_header" ><br>
-                Content: <input name="content" id="the_content" ><br>
-                Contact Details: <input name="contacts" id="the_contacts"><br>
-                <input value="Create" type="submit">
-            </div>
+        <script>
+            $(function() {
+                var dates = $( "#fromDate, #toDate" ).datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    numberOfMonths: 3,
+                    onSelect: function( selectedDate ) {
+                        var option = this.id == "fromDate" ? "minDate" : "maxDate",
+                        instance = $( this ).data( "datepicker" );
+                        date = $.datepicker.parseDate(
+                        instance.settings.dateFormat ||
+                            $.datepicker._defaults.dateFormat,
+                        selectedDate, instance.settings );
+                        dates.not( this ).datepicker( "option", option, date );
+                    }
+                });
+            });
+
+            $("#map_canvas").ready(function(){
+                var latlng = new google.maps.LatLng(-26.195308, 28.043861);
+                var myOptions = {
+                    zoom: 8,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(document.getElementById("map_canvas"),
+                myOptions);
+
+                google.maps.event.addListener(map, 'click', function(event) {
+                    $("#the_lat").val(event.latLng.lat());
+                    $("#the_long").val(event.latLng.lng());
+                });
+    
+            })
+            
+        </script>
+
+        <form class="lift:CreateGenericAd?form=post">
+            Header: <input name="header" id="the_header" ><br>
+            Content: <input name="content" id="the_content" ><br>
+            Contact details: <input name="contacts" id="the_contacts"><br>
+            Link to your website: <input name="link" id="the_link"><br>
+            Contact email: <input name="email" id="the_email"><br>
+
+
+            <div id="map_canvas" style="height: 400px; width:600px"></div>
+
+            Lat: <input name="lat" id="the_lat">
+            Long: <input name="long" id="the_long" style="padding-left: 5px"><br>
+
+
+
+            From date: <input name="fromDate" id="fromDate">
+            to <input name="toDate" id="toDate"><br>
+            <input value="Create" type="submit">
         </form>
     </div>
 </div>
+
+
