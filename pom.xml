@@ -98,7 +98,11 @@
             <artifactId>lift-mongodb_${scala.version}</artifactId>
             <version>${lift.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>r08</version>
+        </dependency>
     </dependencies>
 
     <build>

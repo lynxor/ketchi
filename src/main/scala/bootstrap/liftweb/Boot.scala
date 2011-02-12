@@ -16,6 +16,7 @@ import net.liftweb.mongodb.DefaultMongoIdentifier
 import net.liftweb.mongodb.MongoAddress
 import net.liftweb.mongodb.MongoDB
 import net.liftweb.mongodb.MongoHost
+import za.co.lastminute.lib.ImageLogic
 
 
 /**
@@ -44,7 +45,7 @@ class Boot {
        Menu.i("Create generic ad") / "generic_ads" / "create")
      LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
-    
+    LiftRules.dispatch.append(ImageLogic.matcher)
     /*
      * Show the spinny image when an Ajax call starts
      */

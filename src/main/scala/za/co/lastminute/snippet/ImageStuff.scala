@@ -9,6 +9,7 @@ import http._
 import common._
 import net.liftweb.mongodb.DefaultMongoIdentifier
 import net.liftweb.mongodb.MongoDB
+import scala.xml.NodeSeq
 import util._
 import Helpers._
 import za.co.lastminute.model.User
@@ -16,27 +17,35 @@ import scala.collection.JavaConversions._
 
 object ImageListing{
   def render = {
-    "#images_list" #> findFilesForCurrentUser.map((x) => <div>{x}</div>)
-  }
+    "#images_list" #> {findFilesForCurrentUser match {
+        case a:Full[Iterable[GridFSDBFile]] => a.get.map((x:GridFSDBFile) => (<div><img src={"/images/"+x.getId.toString} alt={x.getFilename}></img></div>))
+        case Empty => (<span>Could not retrieve files</span>)
+      }}}
 
-  def findFilesForCurrentUser: Iterable[String] = {
-    val objId: String = User._id.toString
-    var fileName = "nothing"
-    User.currentUserId match {
-      case loggedIn:Full[String] => {
-         MongoDB.use(DefaultMongoIdentifier) ( db => {
-        val fs = new GridFS(db)
+  
+  def asSelectTable ={
+    "#select_rows" #> {findFilesForCurrentUser match {
+        case a:Full[Iterable[GridFSDBFile]] => a.get.map((x: GridFSDBFile) => (<tr><td><input value={x.getId.toString} name={"image"} type={"radio"}></input><span>{x.getFilename}</span></td><td><img src={"/images/"+x.getId.toString} alt={x.getFilename}></img></td></tr>))
+        case Empty => (<span>Could not retrieve files</span>)
+      }}}
 
-        println("finding files for current user -> "+loggedIn.get)
-        val query = BasicDBObjectBuilder.start
-        .append("user_id", loggedIn.get).get
 
-              val results: java.util.List[GridFSDBFile] =  fs.find(query)
-              asScalaIterable(results).map(_.getFilename)
-      })
+
+    def findFilesForCurrentUser: Box[Iterable[GridFSDBFile]] = {
+      val objId: String = User._id.toString
+      var fileName = "nothing"
+      User.currentUserId match {
+        case loggedIn:Full[String] => {
+            MongoDB.use(DefaultMongoIdentifier) ( db => {
+                val fs = new GridFS(db)
+                val query = BasicDBObjectBuilder.start
+                .append("user_id", loggedIn.get).get
+
+                val results: java.util.List[GridFSDBFile] =  fs.find(query)
+                Full(asScalaIterable(results)) //.map((x) => <div><img src={"/images/"+x.getId.toString} alt={x.getFilename}></img></div>)
+              })
+          }
+        case _ => Empty
       }
-      case Empty => List("You are not logged in")
-      case f:Failure => List("Something went wrong - please try again later")
     }
   }
-}
