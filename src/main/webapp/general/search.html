@@ -1,0 +1,45 @@
+<div id="main" class="lift:surround?with=default&at=content">
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <div>
+        <h2>Search</h2>
+    </div>
+    <script type="text/javascript" >
+
+        function initSearchMaps(){
+            var latlng = new google.maps.LatLng(-26.195308, 28.043861);
+            var myOptions = {
+                zoom: 8,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var searchMap = new google.maps.Map(document.getElementById("search_map"), myOptions);
+
+            google.maps.event.addListener(searchMap, 'click', function(event) {
+                $("#the_lat").val(event.latLng.lat());
+                $("#the_long").val(event.latLng.lng());
+                //placeMarker(event.latLng)
+            });
+        }
+
+        $("#search_map").ready(function(){
+                initSearchMaps()
+        })
+
+
+    </script>
+    <form class="lift:form.ajax">
+        <div class="lift:Search">
+            <div id="search_map" style="height: 400px; width:600px"></div>
+            <table>
+                <tr><td>Location</td> 
+                    <td>
+                        <span class="lift:Msg?id=latErr&errorClass=error">error</span><input name="lat" id="the_lat" value="0">
+                        <span class="lift:Msg?id=longErr&errorClass=error">error</span><input name="long" id="the_long" value="0">
+                    </td>
+                </tr>              
+                <tr><td>Category </td> <td><input name="categories" /></td></tr>
+                <tr><td/><td><input value="Search" type="submit"></td></tr>
+            </table>
+        </div>
+    </form>
+</div>

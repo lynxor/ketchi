@@ -42,7 +42,8 @@ class Boot {
        Menu.i("Preview") / "generic_ads" / "preview" >> Hidden,
        Menu.i("Upload images") /"general" / "fileupload" >> If(() => User.loggedIn_?, S ? "Can't View now"),
        Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_?, S ? "Can't View now"),
-       Menu.i("Create generic ad") / "generic_ads" / "create")
+       Menu.i("Create generic ad") / "generic_ads" / "create",
+       Menu.i("Search") / "general" / "search" )
      LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
     LiftRules.dispatch.append(ImageLogic.matcher)
