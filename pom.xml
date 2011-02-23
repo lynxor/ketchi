@@ -98,6 +98,13 @@
             <artifactId>lift-mongodb_${scala.version}</artifactId>
             <version>${lift.version}</version>
         </dependency>
+
+         <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-widgets_${scala.version}</artifactId>
+            <version>${lift.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

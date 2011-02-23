@@ -19,16 +19,17 @@ object GenericAdSnippet {
   def listAll = "#listing *" #> GenericAd.findAll.map((x: GenericAd) => x.getMarkup)
 }
 
-object Preview {
-  def toffie : Elem = {
+object View {
+  def toffie : (Elem, Elem) = {
     S.param("ad_id") match{
       case a: Box[String] => {
-          GenericAd.find(a.get).map(_.getMarkup).get
+          GenericAd.find(a.get).map((x) => (x.getMarkup, <a href={"/generic_ads/create?ad_id="+x._id.toString}>{"<< Edit "}</a>)).get
         }
-      case _ => <p>ERROR getting preview</p>
+      case _ => (<p>ERROR getting preview</p>, <a href={"/generic_ads/create"}></a>)
     }
   }
-  def render = "#preview *" #> toffie
+  def render = "#view_ad *" #> toffie._1 &
+               "#edit_link" #> toffie._2
 }
 
 object Search {
@@ -37,14 +38,16 @@ object Search {
     var lat = "0.0"
     var long = "0.0"
     var categories:List[String] = Nil
+    var max_distance_input = "1.0"
 
     def process:JsCmd = {
-      
-      GenericAd.findAll("genericads" -> "milk"); Noop
+      val searchResults = GenericAd.findAll("location" -> ( "$near" -> List(asDouble(lat).getOrElse(0.0), asDouble(long).getOrElse(0.0) ))~("$maxDistance" -> asDouble(max_distance_input).getOrElse(0.0))).map((x) => x.getMarkup)
+      SetHtml("search_results", searchResults)
     }
     
     "name=lat" #> SHtml.text(lat, (x) => lat = x) &
     "name=long" #> SHtml.text(long, (x) => long = x) &
+    "id=max_distance_input" #> SHtml.hidden((x:String) => {max_distance_input = x}, "1.0") &
     "name=categories" #> (SHtml.multiSelect(Category.toPairSeq, Category.toDefaultSeq, (x) => categories = x) ++ SHtml.hidden(() => process))
 
   }

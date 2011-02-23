@@ -26,6 +26,7 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
   object contactInfo extends StringField(this, 300)
   object email extends EmailField(this, 140)
   object link extends StringField(this, 140)
+  object imageId extends StringField(this, 300)
   object location extends JsonObjectField[GenericAd, LatLong](this, LatLong) {
     def defaultValue = LatLong(0.0,0.0)
   }
@@ -40,15 +41,19 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
 
     <div class={"borderbox"}>
       <h3>{this.header}</h3>
+      <img src={"/images/"+this.imageId} alt="Cannot display image" />
       <div class={"borderbox"}>{this.contents}</div>
       <br></br>
+      <div class={"borderbox"}>
+        Location : {this.location.toString}
+      </div>
       <div class={"borderbox"}>
         <h4>Contact Information:</h4>
         <ul>
           <li><div>{this.contactInfo}</div></li>
           <li>
             <div>
-              <a href={"http://"+this.link} target={"_blank"}>link to website</a>
+              <a href={"/stats/statsredirect?ad_id="+this._id.toString+"&link_url="+this.link.is} target={"_blank"} >Link to website</a>
             </div>
           </li>
           <li>

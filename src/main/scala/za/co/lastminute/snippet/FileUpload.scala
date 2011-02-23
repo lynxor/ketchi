@@ -10,7 +10,7 @@ import com.mongodb.gridfs._
 import za.co.lastminute.model.User
 
 
-class FileUpload {
+class FileUpload extends Logger {
   var fileHolder : Box[FileParamHolder] = Empty;
   def render = {
     "name=file" #> SHtml.fileUpload((f) => {Console println("setting fileholder to "+f.toString); fileHolder = Full(f)}) &
@@ -22,8 +22,9 @@ class FileUpload {
     val fileId = fileHolder match {
 
       case a:Full[FileParamHolder] => {
+        
           val fileParam: FileParamHolder = a.get
-          println("MIME TYPE "+fileParam.mimeType)
+          info("Got an file: "+fileParam.fileName)
           MongoDB.use(DefaultMongoIdentifier) ( db => {
               val fs = new GridFS(db)
               val inputFile = fs.createFile(fileParam.file)
@@ -33,19 +34,18 @@ class FileUpload {
 
               inputFile.save
 
-              println("saved input file "+inputFile.toString)
+              info("saved input file "+inputFile.toString)
               inputFile.getId
             })
         }
-      case _ => {
-          print("ERROR ocurred while uploading")
-          print(_)
+      case e:Failure => {
+          error("ERROR ocurred while uploading")
           S.error("Invalid receipt attachment")
           0
         }
+      case Empty => warn("No file in holder")
     }
 
-    println("File Id from GridFS"+fileId)
     S.redirectTo("/general/listfiles")
   }
 }

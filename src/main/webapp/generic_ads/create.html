@@ -13,6 +13,7 @@
                     defaultDate: "+1w",
                     changeMonth: true,
                     numberOfMonths: 3,
+                    dateFormat: "yy/mm/dd",
                     onSelect: function( selectedDate ) {
                         var option = this.id == "fromDate" ? "minDate" : "maxDate",
                         instance = $( this ).data( "datepicker" );
@@ -31,7 +32,7 @@
                     change: function(event, ui) {
                         var active = $( "#accordion" ).accordion( "option", "active" );
                         if(active == 1){
-                            initMaps();
+                            google.maps.event.trigger(map, 'resize');
                         }
             
                     }
@@ -93,14 +94,14 @@
 
                 <h3><a href="#">Time Frame</a></h3>
                 <div>
-                    From date: <input name="fromDate" id="fromDate">
-                    to <input name="toDate" id="toDate"><br>
+                    From date: <input name="startDate" id="fromDate">
+                    to <input name="endDate" id="toDate"><br>
 
                 </div>
 
                 <h3><a href="#">Images</a></h3>
                 <div>
-                    <input type="hidden" name="imageInput" id="image_input" >
+                    <input type="hidden" name="imageId" id="image_input" >
                     <table class="lift:ImageListing.asSelectTable">
 
                         <tr id="select_rows"><td></td></tr>
@@ -108,12 +109,10 @@
 
                                                 <tr><td/><td><input type="button" id="uploadImage"></td></tr>-->
                     </table>
-
+                    <input value="Save" type="submit" >
                 </div>
-               
-                <input value="Create" type="submit" >
-                </form>
-            </div>
+        </form>
     </div>
+</div>
 
 
