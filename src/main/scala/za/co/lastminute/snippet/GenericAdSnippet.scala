@@ -58,7 +58,9 @@ object Search extends Logger{
     "id=max_distance_input" #> (SHtml.hidden((x:String) => {
         val distanceInKm = asDouble(x).getOrElse(100.0)
         degrees = (distanceInKm/6371)*180/math.Pi
-      }, "100.0") ++ SHtml.hidden(() => process))
+        process
+      }, "100.0") ) 
+  
    
 
   }
