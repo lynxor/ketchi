@@ -7,33 +7,28 @@ import util.Helpers._
 import js._
 import JsCmds._
 import JE._
-import net.liftweb.sitemap.Menu
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import scala.None
-import scala.xml.NodeSeq
-import za.co.lastminute.model.User
 import za.co.lastminute.model.generic_ad._
+import com.foursquare.rogue.LatLong
+import za.co.lastminute.model.User
 
 
 object CreateGenericAd{
+   private val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
+
   
   private object header extends RequestVar("")
   private object content extends RequestVar("")
   private object contacts extends RequestVar("")
   private object link extends RequestVar("")
   private object email extends RequestVar("")
-  private object lat extends RequestVar("")
-  private object long extends RequestVar("")
-  private object startDate extends RequestVar("")
-  private object endDate extends RequestVar("")
-  
+  private object lat extends RequestVar("-26.195308")
+  private object long extends RequestVar("28.043861")
+  private object startDate extends RequestVar(dateFormatter.print(new DateTime()))
+  private object endDate extends RequestVar(dateFormatter.print(new DateTime().plusDays(7)))
 
-  private val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
-
-   
-    
   def render = {
 
 
@@ -44,11 +39,11 @@ object CreateGenericAd{
     currentAd match{
       case f:Full[GenericAd] => {
           val ad = f.get
-          header.set(ad.header.toString)
-          content.set(ad.contents.toString)
-          contacts.set(ad.contactInfo.toString)
-          link.set(ad.link.toString)
-          email.set(ad.email.toString)
+          header.set(ad.header.is)
+          content.set(ad.contents.is)
+          contacts.set(ad.contactInfo.is)
+          link.set(ad.link.is)
+          email.set(ad.email.is)
           lat.set(ad.location.get.lat.toString)
           long.set(ad.location.get.long.toString)
           startDate.set(dateFormatter.print(new DateTime(ad.lifeTime.get.startDate)))

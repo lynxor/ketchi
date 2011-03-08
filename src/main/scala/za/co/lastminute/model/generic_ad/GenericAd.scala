@@ -11,8 +11,8 @@ import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
 import org.joda.time.DateTime
 import scala.xml.Elem
-import scala.xml.NodeSeq
-import scala.xml.XML
+import com.foursquare.rogue.LatLong
+import com.foursquare.rogue.Rogue._
 
 
 class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
@@ -27,12 +27,18 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
   object email extends EmailField(this, 140)
   object link extends StringField(this, 140)
   object imageId extends StringField(this, 300)
-  object location extends JsonObjectField[GenericAd, LatLong](this, LatLong) {
-    def defaultValue = LatLong(0.0,0.0)
-  }
+//  object location extends JsonObjectField[GenericAd, LatLong](this, LatLong) {
+//    def defaultValue = LatLong(0.0,0.0)
+//  }
+  object location extends MongoCaseClassField[GenericAd, LatLong](this) { override def name = "latlng" }
   object lifeTime extends JsonObjectField[GenericAd, LifeTime](this, LifeTime){
     def defaultValue = LifeTime(new Date, new DateTime().plusDays(1).toDate)
   }
+  
+  object clickDates extends MongoListField[GenericAd, Date](this){
+    override def defaultValue = Nil
+  }
+  
   object userId extends StringField(this, 140)
 
   
@@ -71,10 +77,10 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
 
 object GenericAd extends GenericAd with MongoMetaRecord[GenericAd]{}
 
-case class LatLong(lat:Double, long:Double) extends JsonObject[LatLong]{
-  def meta = LatLong
-}
-object LatLong extends JsonObjectMeta[LatLong]
+//case class LatLong(lat:Double, long:Double) //extends JsonObject[LatLong]{
+//  def meta = LatLong
+//}
+//object LatLong extends JsonObjectMeta[LatLong]
 
 
 case class LifeTime(startDate:Date, endDate:Date) extends JsonObject[LifeTime]{

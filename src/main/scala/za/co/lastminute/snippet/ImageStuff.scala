@@ -27,6 +27,7 @@ object ImageListing{
     "#select_rows" #> {findFilesForCurrentUser match {
         case a:Full[Iterable[GridFSDBFile]] => a.get.map((x: GridFSDBFile) => (<tr><td><input value={x.getId.toString} name={"image"} type={"radio"}></input><span>{x.getFilename}</span></td><td><img src={"/images/"+x.getId.toString} alt={x.getFilename}></img></td></tr>))
         case Empty => (<span>Could not retrieve files</span>)
+        case f:Failure => (<span>Error occurred {f.toString} </span>)
       }}}
 
 

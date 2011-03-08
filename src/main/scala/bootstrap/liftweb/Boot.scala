@@ -14,6 +14,8 @@ import net.liftweb.mongodb.DefaultMongoIdentifier
 import net.liftweb.mongodb.MongoAddress
 import net.liftweb.mongodb.MongoDB
 import net.liftweb.mongodb.MongoHost
+import net.liftweb.widgets.flot.Flot
+import net.liftweb.widgets.sparklines.Sparklines
 import za.co.lastminute.lib.ImageLogic
 
 
@@ -64,6 +66,9 @@ class Boot {
     LiftRules.ajaxEnd =
       Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
 
+    //Initialise support for Flot
+    Flot.init
+    
     LiftRules.handleMimeFile = OnDiskFileParamHolder.apply
 
     LiftRules.early.append(makeUtf8)

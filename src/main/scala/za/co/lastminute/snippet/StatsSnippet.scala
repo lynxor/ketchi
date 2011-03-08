@@ -8,9 +8,10 @@ import Helpers._
 import java.util.Date
 import  js._
 import JsCmds._
+import net.liftweb.widgets.flot.{Flot, FlotOptions, FlotSerie, FlotAxisOptions}
 import net.liftweb.widgets.sparklines._
-import org.joda.time.DateTime
-import org.joda.time.LocalDate
+import org.bson.types.ObjectId
+import org.joda.time._
 import scala.xml.NodeSeq
 import za.co.lastminute.model._
 import za.co.lastminute.model.generic_ad._
@@ -20,8 +21,7 @@ import net.liftweb.json.JsonDSL._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import scala.collection.mutable.Map
-import com.mongodb.BasicDBObjectBuilder
-
+import com.foursquare.rogue.Rogue._
 
 
 class StatsRedirect extends Logger{
@@ -30,54 +30,69 @@ class StatsRedirect extends Logger{
     val link:String = S.param("link_url").getOrElse(RedirectTo("/static/errorpage"))
     val adId:String = S.param("ad_id").getOrElse(RedirectTo(link))
     
-    info("Storing click for ad :"+adId +" link: "+link)
+    info("Storing click for ad : "+adId +" link: "+link)
 
-    val query = BasicDBObjectBuilder.start
-    .append("genericAdId", adId).get
-
-    ClickStat.findAll(query) match{
-      case f:List[ClickStat] if(f.isEmpty) => ClickStat.createRecord.genericAdId(adId).save //by default creates now click
-      case f:List[ClickStat] => {
-          val statsItem = f(0)
-          statsItem.date(new Date()).save
-
+    (GenericAd where (_._id eqs new ObjectId(adId)) get) match{
+      case g:Some[GenericAd] => {
+          val currentValue = g.get.clickDates.is
+          g.get.clickDates.set(new Date() :: currentValue)
+          g.get.save
         }
+      case None => RedirectTo("/static/errorpage")
     }
     S.redirectTo(link);
   }
 }
 
 object ViewStats extends Logger{
-    private val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+  private val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
     
-  def render = {
+  def render(xhtml: NodeSeq) = {
+    var adData:List[List[(Double, Double)]] = Nil
 
-    val adId = GenericAd.find(BasicDBObjectBuilder.start.append("userId",User.currentUserId.get.toString).get).map(_._id.toString).getOrElse("NOADS")
-    
-  // val adId:String = S.param("ad_id").getOrElse("/static/errorpage")
-    info("Generating stats for ad "+adId)
-    val query = BasicDBObjectBuilder.start
-    .append("genericAdId", adId).get
+    val ads:List[GenericAd] = GenericAd where (_.userId eqs User.currentUserId.getOrElse("guest")) fetch
 
-   
-    val dates:List[Date] = ClickStat.find(query).map((x:ClickStat) => x.click.is.dates).getOrElse(Nil)
-    val dateToCount = dates.foldLeft(Map[LocalDate, Int]())((map:Map[LocalDate, Int], d:Date) => {
-        val localDate:LocalDate = new DateTime(d).toLocalDate
-        map.get(localDate) match {
-          case f:Some[Int] => map += (localDate -> (f.get+1))
-          case None => map += (localDate -> 1)
+    val allPlot = ads.map(transformAd(_)).map((x:List[(Double, Double)]) => new FlotSerie(){override val data = x})
+
+    val options = new FlotOptions () {
+      override val xaxis = Full (new FlotAxisOptions () {
+          override val mode = Full ("time")
+        })
+    }
+
+    Flot.render ( "graph", allPlot, options, Flot.script(xhtml))
+
+  }
+
+
+  def transformAd(ad:GenericAd): List[(Double, Double)] = {
+
+    info("Generating stats for ad "+ad.header.is)
+
+    val dates:List[LocalDate] = ad.clickDates.is.map(new DateTime(_).toLocalDate).sortWith((item1,item2) => item1.compareTo(item2) < 0)
+
+    if(dates.length == 0) return Nil
+
+    val startDate = dates(0)
+    val endDate = dates(dates.length-1)
+
+    val dateToCount = dates.foldLeft(Map[LocalDate, Int]())((map:Map[LocalDate, Int], date:LocalDate) => {
+        map.get(date) match {
+          case f:Some[Int] => map += (date -> (f.get+1))
+          case None => map += (date -> 1)
         }
       })
 
-    val expList:List[JsExp] = dateToCount.map((x) => JsArray(formatter.print(x._1), x._2)).toList
+    for ( i <- 0 to Days.daysBetween(startDate, endDate).getDays){
+      val dt:LocalDate = startDate.plusDays(i)
+      dateToCount.get(dt) match {
+        case None => dateToCount += (dt -> 0); info("Adding date "+dt)
+        case f:Some[Int] => info("Matched something!")
+      }
+    }
 
-    val data = JsArray(expList:_*)
-
-    val opts = JsObj(("percentage_lines" -> JsArray(0.5, 0.75)),
-                     ("fill_between_percentage_lines" -> true),
-                     ("extend_markings" -> false));
-    Sparklines.onLoad("graph", SparklineStyle.LINE, data, opts);
-
+    dateToCount.map((x) => (x._1.toDateTimeAtStartOfDay.toDate.getTime.toDouble, x._2.toDouble)).toList
+    .sortWith((item1,item2) => item1._1 < item2._1)  
   }
-  
+ 
 }
