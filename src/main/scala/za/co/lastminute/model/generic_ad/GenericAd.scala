@@ -27,9 +27,7 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
   object email extends EmailField(this, 140)
   object link extends StringField(this, 140)
   object imageId extends StringField(this, 300)
-//  object location extends JsonObjectField[GenericAd, LatLong](this, LatLong) {
-//    def defaultValue = LatLong(0.0,0.0)
-//  }
+  object tags extends MongoListField[GenericAd, String](this)
   object location extends MongoCaseClassField[GenericAd, LatLong](this) { override def name = "latlng" }
   object lifeTime extends JsonObjectField[GenericAd, LifeTime](this, LifeTime){
     def defaultValue = LifeTime(new Date, new DateTime().plusDays(1).toDate)

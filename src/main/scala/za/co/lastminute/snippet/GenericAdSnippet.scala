@@ -55,15 +55,19 @@ object Search extends Logger{
     
     "name=lat" #> SHtml.text(lat.toString, (x:String) => lat = asDouble(x).getOrElse(0.0)) &
     "name=long" #> SHtml.text(long.toString, (x:String) => long = asDouble(x).getOrElse(0.0)) &
-    "id=max_distance_input" #> SHtml.hidden((x:String) => {
+    "id=max_distance_input" #> (SHtml.hidden((x:String) => {
         val distanceInKm = asDouble(x).getOrElse(100.0)
         degrees = (distanceInKm/6371)*180/math.Pi
-      }, "100.0") &
-    "name=categories" #> (SHtml.multiSelect(Category.toPairSeq, Category.toDefaultSeq, (x) => categories = x) ++ SHtml.hidden(() => process))
+      }, "100.0") ++ SHtml.hidden(() => process))
+   
 
   }
 
-  def toDegrees(){
-    
+   def quick = {
+    def process(value:String) = {
+      val ads = GenericAd where (_.tags contains value) fetch;
+      SetHtml("searchResults", ads.map(_.getMarkup)) & Focus("search_box")
+    }
+    "name=searchBox" #> SHtml.ajaxText("special", process(_))
   }
 }

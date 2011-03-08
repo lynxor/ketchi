@@ -46,6 +46,7 @@ class Boot {
       Menu.i("Error Page") /"static" / "errorpage" >> Hidden,
       Menu.i("Create generic ad") / "generic_ads" / "create", //>> If(() => User.loggedIn_?, S ? "Can't View now"),
       Menu.i("Search") / "general" / "search" ,
+      Menu.i("Quick Search") / "general" / "quicksearch" ,
       Menu.i("View Stats") / "stats" / "viewstats")
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 

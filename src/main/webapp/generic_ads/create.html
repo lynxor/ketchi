@@ -26,19 +26,20 @@
                 });
             });
 
-            //initialise the accordion
+            //initialise the tabs
             $(function() {
-                $( "#accordion" ).accordion({
-                    change: function(event, ui) {
-                        var active = $( "#accordion" ).accordion( "option", "active" );
-                        if(active == 1){
-                            google.maps.event.trigger(map, 'resize');
+                $( "#tabs" ).tabs({
+                    show: function(event, ui){
+                        var selected = $( "#tabs" ).tabs( "option", "selected" );
+                        if(selected == 1){
+                             google.maps.event.trigger(map, 'resize');
+                             map.setCenter(new google.maps.LatLng(-26.195308, 28.043861));
                         }
-            
                     }
                 });
-            });
 
+               
+            });
             function initMaps(){
                 var latlng = new google.maps.LatLng(-26.195308, 28.043861);
                 var myOptions = {
@@ -72,9 +73,15 @@
 
         <form class="lift:CreateGenericAd?form=post">
 
-            <div id="accordion">
-                <h3><a href="#">General Information</a></h3>
-                <div>
+            <div id="tabs">
+                <ul>
+                    <li><a href="#general" >General Information</a></li>               
+                    <li><a href="#location" >Location</a></li>
+                    <li><a href="#time" >Time Frame</a></li>
+                    <li><a href="#images" >Image</a></li>
+                    <li><a href="#tags">Tags</a></li>
+                </ul>
+                <div id="general">
                     <table>
                         <tr><td>Header:</td> <td><input name="header" id="the_header" ></td></tr>
                         <tr> <td>Content:</td><td> <input name="content" id="the_content" ></td></tr>
@@ -83,24 +90,20 @@
                         <tr> <td>Contact email: </td><td><input name="email" id="the_email"></td></tr>
                     </table>
                 </div>
-
-                <h3><a id="location_panel" href="#">Location</a></h3>
-                <div>
+                <div id="location">
                     <div id="map_canvas" style="height: 400px; width:600px"></div>
                     Lat: <input name="lat" id="the_lat">
                     Long: <input name="long" id="the_long" style="padding-left: 5px"><br>
 
                 </div>
 
-                <h3><a href="#">Time Frame</a></h3>
-                <div>
+
+                <div id="time">
                     From date: <input name="startDate" id="fromDate">
                     to <input name="endDate" id="toDate"><br>
-
                 </div>
 
-                <h3><a href="#">Images</a></h3>
-                <div style="height:300px">
+                <div style="height:300px" id="images">
                     <input type="hidden" name="imageId" id="image_input" >
                     <table class="lift:ImageListing.asSelectTable">
 
@@ -110,6 +113,11 @@
                                                 <tr><td/><td><input type="button" id="uploadImage"></td></tr>-->
                     </table>
                     <input value="Save" type="submit" >
+                </div>
+                <div id="tags">
+                    <span >This should be a comma separated list of items</span>
+                    <span style="color: red; font-weight: bold"> It is important to fill this in with care as it will be used for searches</span>
+                    Tags: <input name="tags" />
                 </div>
         </form>
     </div>

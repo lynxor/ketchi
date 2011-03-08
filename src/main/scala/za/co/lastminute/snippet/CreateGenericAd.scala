@@ -28,6 +28,7 @@ object CreateGenericAd{
   private object long extends RequestVar("28.043861")
   private object startDate extends RequestVar(dateFormatter.print(new DateTime()))
   private object endDate extends RequestVar(dateFormatter.print(new DateTime().plusDays(7)))
+  private object tags extends RequestVar("special")
 
   def render = {
 
@@ -48,6 +49,7 @@ object CreateGenericAd{
           long.set(ad.location.get.long.toString)
           startDate.set(dateFormatter.print(new DateTime(ad.lifeTime.get.startDate)))
           endDate.set(dateFormatter.print(new DateTime(ad.lifeTime.get.endDate)))
+          tags.set(ad.tags.is.join(","))
           imageId = Full(ad.imageId.toString)
         }
       case _ => Empty
@@ -83,6 +85,7 @@ object CreateGenericAd{
       .lifeTime(LifeTime(dateFormatter.parseDateTime(startDate.get).toDate, dateFormatter.parseDateTime(endDate.get).toDate))
       .userId(User.currentUserId.get.toString)
       .imageId(imageId)
+      .tags(tags.is.split(",").toList)
       .save
 
       S.redirectTo("/generic_ads/view?ad_id="+newGAd._id.toString)
@@ -98,6 +101,7 @@ object CreateGenericAd{
     "name=startDate" #> SHtml.textElem(startDate) &
     "name=endDate" #> SHtml.textElem(endDate) &
     "name=imageId" #> SHtml.hidden((x:String) => {imageId = Full(x)}, "") &
+    "name=tags" #> SHtml.textElem(tags) &
     "type=submit"  #> SHtml.onSubmitUnit(() => process)
   }
 
