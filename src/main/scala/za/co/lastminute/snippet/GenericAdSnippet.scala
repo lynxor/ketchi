@@ -68,7 +68,7 @@ object Search extends Logger{
    def quick = {
     def process(value:String) = {
       val ads = GenericAd where (_.tags contains value) fetch;
-      SetHtml("searchResults", ads.map(_.getMarkup)) & Focus("search_box")
+      SetHtml("main_content", ads.map(_.getMarkup)) & Focus("search_box")
     }
     "name=searchBox" #> SHtml.ajaxText("special", process(_))
   }

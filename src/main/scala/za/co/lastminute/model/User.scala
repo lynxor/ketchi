@@ -12,8 +12,11 @@ package za.co.lastminute {
     import net.liftweb.mongodb.JsonObject
     import net.liftweb.mongodb.JsonObjectMeta
     import net.liftweb.mongodb.record.field.JsonObjectField
-    import net.liftweb.record.field.StringField
+    import net.liftweb.mongodb.record.field.MongoListField
+import net.liftweb.record.field.StringField
     import za.co.lastminute.lib._
+    import net.liftweb.http._
+    import com.foursquare.rogue.Rogue._
 
 
     /**
@@ -33,29 +36,39 @@ package za.co.lastminute {
 
       // comment this line out to require email validations
       override def skipEmailValidation = true
-      
+
+      def formLogin: LiftRules.DispatchPF = {
+        case Req("form_login" :: Nil, _, PostRequest) if !loggedIn_? =>
+          () => {
+            (for {
+                uname <- S.param("username")
+                pw <- S.param("password")
+                user <- User where (_.email eqs uname) get
+
+                if user.validated.is &&
+                user.password.is.equals(pw)
+              } yield user) match {
+              case Full(user) => logUserIn(user)
+                S.notice("Logged In")
+              case _ => S.error("Unable to verify username/password")
+            }
+            S.redirectTo(S.referer openOr "/")
+          }
+      } 
 
     }
 
-    /**
-     * An O-R mapped "User" class that includes first name, last name, password and we add a "Personal Essay" to it
-     */
     class User extends MegaProtoUser[User]{
       def meta = User // what's the "meta" server
 
      
-      object roles extends JsonObjectField[User, Roles](this, Roles) {
-        def defaultValue = Roles(meta.Normal)
+      object roles extends MongoListField[User, String](this){
+        override def defaultValue = List(meta.Normal)
       }
 
-      def retrieveRoles:Seq[String] = roles.get.roles
+      def retrieveRoles:Seq[String] = roles.is
       def isInRole(role:String*): Boolean = retrieveRoles.foldLeft(false)(_ || role.contains(_))
     }
-    
-    case class Roles(roles:String*) extends JsonObject[Roles]{
-      def meta = Roles
-    }
-    object Roles extends JsonObjectMeta[Roles]
   }
 
  

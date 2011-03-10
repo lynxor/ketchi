@@ -34,23 +34,25 @@ class Boot {
     // Build SiteMap
     def sitemap() = SiteMap(
      
-      Menu("Home") / "index" >>  User.AddUserMenusAfter,
-      // Menu with special Link
-      Menu.i("Help") / "static"  / "help",
-      Menu.i("Contact") / "static" / "contact",
-      Menu.i("Listing") / "generic_ads" / "listing",
+      Menu("Home") / "index" >> Hidden,
+      Menu.i("Help") / "static"  / "help" >> LocGroup("bottom"),
+      Menu.i("Contact") / "static" / "contact" >>LocGroup("bottom"),
+      Menu.i("Search") / "general" / "search"  >> LocGroup("search"),
+      Menu.i("Listing") / "generic_ads" / "listing" >> LocGroup("search") ,
       Menu.i("View") / "generic_ads" / "view" >> Hidden,
       Menu.i("StatsRedirect") / "stats" / "statsredirect" >> Hidden,
-      Menu.i("Upload images") /"general" / "fileupload", //>> If(() => User.loggedIn_? && User.isInRole(User.Client, User.Admin), S ? "Can't View now"),
-      Menu.i("List images") /"general" / "listfiles", //>> If(() => User.loggedIn_? && User.isInRole(User.Admin), S ? "Can't View now"),
-      Menu.i("Error Page") /"static" / "errorpage" >> Hidden,
-      Menu.i("Create generic ad") / "generic_ads" / "create", //>> If(() => User.loggedIn_?, S ? "Can't View now"),
-      Menu.i("Search") / "general" / "search" ,
-      Menu.i("Quick Search") / "general" / "quicksearch" ,
-      Menu.i("View Stats") / "stats" / "viewstats")
+      Menu.i("Quick Search") / "general" / "quicksearch" >>Hidden ,
+      Menu.i("Error Page") /"static" / "errorpage" >> Hidden,             
+      Menu.i("Upload images") /"general" / "fileupload">> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("Create a new ad") / "generic_ads" / "create" >> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("View Stats") / "stats" / "viewstats" >> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.currentUser.get.isInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client") )
+    
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
     LiftRules.dispatch.append(ImageLogic.matcher)
+    LiftRules.dispatch.append(User.formLogin)
 
     val logUrl = LiftRules.getResource("/logconfig.xml")
     logUrl.foreach((x:URL) => Logger.setup = Full(Logback.withFile(x)))
