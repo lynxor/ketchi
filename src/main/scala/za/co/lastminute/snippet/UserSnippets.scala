@@ -10,6 +10,8 @@ import util.Helpers._
 
 import za.co.lastminute.model.User;
 import com.foursquare.rogue.Rogue._
+import net.liftweb.util.Mailer
+import Mailer._
     
 object UserSnippets {
 
@@ -48,13 +50,29 @@ object UserSnippets {
     val users = User where (_.roles size 1) fetch
     
     val selectItems = ("", "Please select a user") :: users
-      .filter(!_.roles.is.contains("client", "admin"))
-      .map((u:User) => (u._id.toString, u.email.toString))
+    .filter(!_.roles.is.contains("client", "admin"))
+    .map((u:User) => (u._id.toString, u.email.toString))
     
     "name=user_list" #> SHtml.ajaxSelect(selectItems, None, (s:String) => {
         selectedUser = (User where (_._id eqs new ObjectId(s)) get);
         SetHtml("user_info", userinfo)
       }) &
     "name=promote_selected" #> SHtml.ajaxButton("Promote selected", () => promoteUser)
+  }
+
+  def advertiseRequest = {
+    var requestText = "";
+    var email = "";
+
+    
+    "#email" #> SHtml.ajaxText("text", (text:String) => {email = text; Noop}) &
+    "#request_par" #> SHtml.ajaxTextarea("toffie", (text: String) => {requestText = text; Noop}) &
+    "#request_button" #> SHtml.ajaxButton("Request", () => {
+        sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
+                 PlainMailBodyType("email: "+email+"\n"+"request: "+requestText));
+
+        SetHtml("request_status", <span>Submitted</span>);
+      }) 
+   
   }
 }

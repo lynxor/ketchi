@@ -95,7 +95,7 @@
                     <span class="lift:Msgs?showAll=true"/>
                     <hr class="space" />
                 </div>
-                <div class="column span-17 last">
+                <div class="column span-17 last" style="width: 100%">
                     <div id="content" >
                         <!-- The HTML content will go here -->
                     </div>
@@ -103,24 +103,44 @@
             </div>
             <div class="right_hand_content" >
 
-                <div class="content_box search_box" >
-
-                    <div class="lift:embed?what=/general/quicksearch">
-                        insert quicksearch here
+                <div class="content_box search_box ui-widget ui-widget-content ui-corner-all" >
+                    <div class="ui-widget-header ui-corner-all box_header ui-state-default">
+                        <span>Search and view ads</span>
                     </div>
 
-                    <span class="lift:Menu.group?group=search" />
+                    <div class="lift:embed?what=/general/quicksearch"></div>
+
+                    <div class="lift:Menu.group?group=search" ></div>
 
                 </div>
-                <lift:TestCond.loggedout>
-                    <div class="content_box personal_box" >
 
+                <lift:TestCond.loggedout>
+                    <div class="content_box personal_box ui-widget ui-widget-content ui-corner-all" >
+                        <div class="ui-widget-header ui-corner-all box_header ui-state-default">
+                            <span>Personal options</span>
+                        </div>
                         <div>
                             <form method="post" action="/user_mgt/login">
-                                Username: <input name="username"/><br/>
-                                Password: <input name="password" type="password"/><br/>
-                                <input type="submit" value="Login" style=""/>
-
+                                <div>
+                                    <table>
+                                        <tr>
+                                            <td>Username</td><td> <input name="username"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Password</td><td><input name="password" type="password"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <input type="submit" value="Login"
+                                                       style="padding: 3px; float: right"
+                                                       class="ui-button ui-widget ui-state-default ui-corner-all"
+                                                       onmouseover="hover(this)"
+                                                       onmouseout="unhover(this)"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                                 <div><a href="/user_mgt/lost_password" >Lost password</a></div>
                                 <div><a href="/user_mgt/sign_up" >Sign up</a></div>
                             </form>
@@ -130,10 +150,12 @@
                     </div>
                 </lift:TestCond.loggedout>
 
-                <div class="content_box client_box">
-                    <hr class="space" />
-                    <span class="lift:Menu.group?group=client" />
+                <div class="content_box client_box ui-widget ui-widget-content ui-corner-all">
+                    <div class="ui-widget-header ui-corner-all box_header ui-state-default">
+                        <span>Customize your own ads</span>
+                    </div>
 
+                    <span class="lift:Menu.group?group=client" />
                 </div>
             </div>
 

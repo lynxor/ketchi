@@ -10,6 +10,8 @@ import Helpers._
 import _root_.za.co.lastminute.model.User
 import  _root_.za.co.lastminute.model.generic_ad._
 import java.net.URL
+import javax.mail.Authenticator
+import javax.mail.PasswordAuthentication
 import net.liftweb.mongodb.DefaultMongoIdentifier
 import net.liftweb.mongodb.MongoAddress
 import net.liftweb.mongodb.MongoDB
@@ -47,15 +49,21 @@ class Boot {
       Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
       Menu.i("Create a new ad") / "generic_ads" / "create" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
       Menu.i("View Stats") / "stats" / "viewstats" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client") )
+      Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client"),
+      Menu.i("Advertise here!") / "user" / "advertiserequest" >> If(() => !User.loggedIn_?, S ? "Can't do for existing user" ) >> LocGroup("client"))
     
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
     LiftRules.dispatch.append(ImageLogic.matcher)
     LiftRules.dispatch.append(User.formLogin)
 
+    //LOGGING
     val logUrl = LiftRules.getResource("/logconfig.xml")
     logUrl.foreach((x:URL) => Logger.setup = Full(Logback.withFile(x)))
+
+    //EMAIL
+    configMailer("mail.ketchi.co.za", "dawid.malan@ketchi.co.za", "poffie")
+    
     /*
      * Show the spinny image when an Ajax call starts
      */
@@ -86,5 +94,16 @@ class Boot {
    */
   private def makeUtf8(req: HTTPRequest) {
     req.setCharacterEncoding("UTF-8")
+  }
+
+  def configMailer(host: String, user: String, password: String) {
+    // Enable TLS support
+    System.setProperty("mail.smtp.starttls.enable","true");
+    // Set the host name
+    System.setProperty("mail.smtp.host", host) // Enable authentication
+    System.setProperty("mail.smtp.auth", "true") // Provide a means for authentication. Pass it a Can, which can either be Full or Empty
+    Mailer.authenticator = Full(new Authenticator {
+        override def getPasswordAuthentication = new PasswordAuthentication(user, password)
+      })
   }
 }

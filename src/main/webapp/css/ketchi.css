@@ -1,9 +1,12 @@
+div .container{
+    width: 60%;
+}
 
 .borderbox{
 /*    border: 1px #CCCCCC solid;*/
     padding: 5px;
-
 }
+
 #map_canvas {
     height: 400px;
     width: 400px;
@@ -15,12 +18,12 @@
 
 .main_content{
     float:left;
-    width: 70%;
+    width: 65%;
 }
 .right_hand_content{
     margin-right: 5px;
     float:right;
-    width: 25%;
+    width: 300px;
 }
 .content_box {
     color: #444444;
@@ -38,6 +41,7 @@
     float: right;
     color: #DDDDDD
 }
+
 a{
     color: #DDDDDD;
 }
@@ -59,4 +63,12 @@ input{
     padding-top: 6px;
     height: 30px;
     text-align: center; 
+}
+.box_header {
+    height: 20px;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.ketchi_button{
+    padding: 3px;
 }

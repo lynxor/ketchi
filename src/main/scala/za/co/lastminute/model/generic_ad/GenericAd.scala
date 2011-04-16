@@ -46,11 +46,6 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
     <div class={"borderbox ui-widget ui-widget-content ui-corner-all"} onclick={"toggleExpandedView('"+this._id.toString+"');"}>
       <div id={this._id.toString+"_header"} class="ui-widget-header ui-corner-all ad_header ui-state-default" onmouseover="hover(this)" onmouseout="unhover(this)">
         <span >{this.header}</span>
-        <!--
-        <a id={this._id.toString+"_toggleButton"} class="ui-corner-all"  style="float:right" >
-          <span class="ui-icon ui-icon-plusthick" />
-        </a>
-        -->
       </div>
       
       <div id={this._id.toString+"_expanded"} style={"display:none;"} class="ui-widget-content ui-corner-bottom">
@@ -58,7 +53,7 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
         <div class={"borderbox"}>{this.contents}</div>
         <br></br>
         <div class={"borderbox"}>
-          Location : {this.location.toString}
+          Location : {this.location.is.lat +", "+ this.location.is.long}
         </div>
         <div class={"borderbox"}>
           <h4>Contact Information:</h4>

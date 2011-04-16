@@ -35,7 +35,7 @@ import net.liftweb.record.field.StringField
 //                                     locale, timezone, password)
 
       // comment this line out to require email validations
-      override def skipEmailValidation = true
+      override def skipEmailValidation = false
 
       def isCurrentUserInRole(role:String*): Boolean = {
         User.currentUser match {
