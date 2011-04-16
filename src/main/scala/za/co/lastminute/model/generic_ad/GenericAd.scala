@@ -43,33 +43,71 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
 
   def getMarkup(): Elem= {
 
-    <div class={"borderbox"}>
-      <h3>{this.header}</h3>
-      <img src={"/images/"+this.imageId} alt="Cannot display image" />
-      <div class={"borderbox"}>{this.contents}</div>
-      <br></br>
-      <div class={"borderbox"}>
-        Location : {this.location.toString}
+    <div class={"borderbox ui-widget ui-widget-content ui-corner-all"} onclick={"toggleExpandedView('"+this._id.toString+"');"}>
+      <div id={this._id.toString+"_header"} class="ui-widget-header ui-corner-all ad_header ui-state-default" onmouseover="hover(this)" onmouseout="unhover(this)">
+        <span >{this.header}</span>
+        <!--
+        <a id={this._id.toString+"_toggleButton"} class="ui-corner-all"  style="float:right" >
+          <span class="ui-icon ui-icon-plusthick" />
+        </a>
+        -->
       </div>
-      <div class={"borderbox"}>
-        <h4>Contact Information:</h4>
-        <ul>
-          <li><div>{this.contactInfo}</div></li>
-          <li>
-            <div>
-              <a href={"/stats/statsredirect?ad_id="+this._id.toString+"&link_url="+this.link.is} target={"_blank"} >Link to website</a>
-            </div>
-          </li>
-          <li>
-            <div>
-              <a href={"mailto:"+ this.email}>{this.email}</a>
-            </div>
-          </li>
-        </ul>
+      
+      <div id={this._id.toString+"_expanded"} style={"display:none;"} class="ui-widget-content ui-corner-bottom">
+        <img src={"/images/"+this.imageId} alt="Cannot display image" style="display: block; padding 10px" />
+        <div class={"borderbox"}>{this.contents}</div>
+        <br></br>
+        <div class={"borderbox"}>
+          Location : {this.location.toString}
+        </div>
+        <div class={"borderbox"}>
+          <h4>Contact Information:</h4>
+          <ul>
+            <li><div>{this.contactInfo}</div></li>
+            <li>
+              <div>
+                <a href={"/stats/statsredirect?ad_id="+this._id.toString+"&link_url="+this.link.is} target={"_blank"} >Link to website</a>
+              </div>
+            </li>
+            <li>
+              <div>
+                <a href={"mailto:"+ this.email}>{this.email}</a>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
+      
+      <!-- compacted -->
+      <div id={this._id.toString+"_compacted"} >
+
+        <div class={"borderbox"}>{this.contents.is match {
+              case f:String if(f.length > 100) => f.substring(0, 100) + " ..."
+              case f:String => f
+              case _ => "No content defined"
+            }
+          }
+        </div>
+        
+      </div>
+      
     </div>
 
   }
+
+//  def getCompactableView():Elem = {
+//    <div>
+//      <div id={this._id.toString} class={"borderbox "}>
+//        <h4>{this.header}</h4> <input type="button" value={"+"} />
+//
+//
+//
+//      </div>
+//      <div id={this._id.toString+"_expanded"} style={"display:none"}>
+//        {getMarkup()}
+//      </div>
+//    </div>
+//  }
 
 }
 

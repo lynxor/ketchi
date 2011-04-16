@@ -19,9 +19,9 @@ import S._
 import _root_.net.liftweb.proto.{ProtoUser => GenProtoUser}
 import net.liftweb.mongodb.record.{MongoRecord, MongoId, MongoMetaRecord}
 import net.liftweb.mongodb._
-import _root_.net.liftweb.json.DefaultFormats
+import net.liftweb.record.field.StringTypedField
 import _root_.net.liftweb.json.JsonDSL._
-import _root_.net.liftweb.json.JsonAST.JObject
+
 
 import net.liftweb.record.field._
 trait UserIdAsString {

@@ -5,11 +5,12 @@
 
         <title>Ketchi - All the best deals</title>
         <link rel="stylesheet" href="/css/ketchi.css" type="text/css" />
-        <link rel="stylesheet" href="/css/jquery-ui-1.8.9.custom.css" type="text/css" />
+        <link rel="stylesheet" href="/css/dark-hive/jquery-ui-1.8.11.custom.css" type="text/css" />
 
         <script id="jquery" src="/classpath/jquery.js" type="text/javascript"></script>
 
-        <script src="/js/jquery-ui-1.8.9.custom.min.js" type="text/javascript"></script>
+        <script src="/js/jquery-ui-1.8.11.custom.js" type="text/javascript"></script>
+        <script src="/js/general.js" type="text/javascript" ></script>
         <script id="json" src="/classpath/json.js" type="text/javascript"></script>
 
         <style class="lift:CSS.blueprint" />
@@ -77,6 +78,14 @@
             <div>
                 <a href="/index"><img alt="Ketchi" src="/images/ketchi.png" /></a>
                 <img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px; float: right;" src="/images/ajax-loader.gif"/>
+
+
+                <lift:TestCond.loggedin>
+                    <div class="lift:UserSnippets.greeting" >
+                        <span id="greeting">Hello</span>
+                    </div>
+                    <div style="float: right"><a href="/user_mgt/logout">Log out</a></div>
+                </lift:TestCond.loggedin>
             </div>
 
             <hr/>
@@ -103,10 +112,10 @@
                     <span class="lift:Menu.group?group=search" />
 
                 </div>
+                <lift:TestCond.loggedout>
+                    <div class="content_box personal_box" >
 
-                <div class="content_box personal_box" >
-                    <div>
-                        <lift:TestCond.loggedout>
+                        <div>
                             <form method="post" action="/user_mgt/login">
                                 Username: <input name="username"/><br/>
                                 Password: <input name="password" type="password"/><br/>
@@ -114,14 +123,13 @@
 
                                 <div><a href="/user_mgt/lost_password" >Lost password</a></div>
                                 <div><a href="/user_mgt/sign_up" >Sign up</a></div>
-
-
                             </form>
-                        </lift:TestCond.loggedout>
+                        </div>
+
+
                     </div>
+                </lift:TestCond.loggedout>
 
-
-                </div>
                 <div class="content_box client_box">
                     <hr class="space" />
                     <span class="lift:Menu.group?group=client" />

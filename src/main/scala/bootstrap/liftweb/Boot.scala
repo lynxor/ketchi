@@ -43,11 +43,11 @@ class Boot {
       Menu.i("StatsRedirect") / "stats" / "statsredirect" >> Hidden,
       Menu.i("Quick Search") / "general" / "quicksearch" >>Hidden ,
       Menu.i("Error Page") /"static" / "errorpage" >> Hidden,             
-      Menu.i("Upload images") /"general" / "fileupload">> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("Create a new ad") / "generic_ads" / "create" >> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("View Stats") / "stats" / "viewstats" >> If(() => User.loggedIn_? && User.isInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.currentUser.get.isInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client") )
+      Menu.i("Upload images") /"general" / "fileupload">> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("Create a new ad") / "generic_ads" / "create" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("View Stats") / "stats" / "viewstats" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client") )
     
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 

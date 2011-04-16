@@ -50,11 +50,13 @@
     </pluginRepositories>
 
     <dependencies>
-        <dependency>
-            <groupId>net.liftweb</groupId>
-            <artifactId>lift-mapper_${scala.version}</artifactId>
-            <version>${lift.version}</version>
+
+         <dependency>
+            <groupId>com.foursquare</groupId>
+            <artifactId>rogue_${scala.version}</artifactId>
+            <version>1.0.6</version>
         </dependency>
+        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -89,6 +91,12 @@
 
         <dependency>
             <groupId>net.liftweb</groupId>
+            <artifactId>lift-mapper_${scala.version}</artifactId>
+            <version>${lift.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.liftweb</groupId>
             <artifactId>lift-mongodb-record_${scala.version}</artifactId>
             <version>${lift.version}</version>
         </dependency>
@@ -100,10 +108,18 @@
         </dependency>
 
         <dependency>
-            <groupId>com.foursquare</groupId>
-            <artifactId>rogue_2.8.0</artifactId>
-            <version>1.0.4</version>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-json_${scala.version}</artifactId>
+            <version>${lift.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-json-ext_${scala.version}</artifactId>
+            <version>${lift.version}</version>
+        </dependency>
+
+       
         
         <dependency>
             <groupId>net.liftweb</groupId>
@@ -114,7 +130,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>r08</version>
+            <version>r09</version>
         </dependency>
     </dependencies>
 
@@ -178,7 +194,7 @@
                     <scanIntervalSeconds>5</scanIntervalSeconds>
                 </configuration>
             </plugin>
-            <plugin>
+<!--            <plugin>
                 <groupId>net.sf.alchim</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
                 <version>0.7.1</version>
@@ -192,7 +208,7 @@
                 <configuration>
                     <nosuffix>true</nosuffix>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-idea-plugin</artifactId>

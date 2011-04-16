@@ -37,6 +37,14 @@ import net.liftweb.record.field.StringField
       // comment this line out to require email validations
       override def skipEmailValidation = true
 
+      def isCurrentUserInRole(role:String*): Boolean = {
+        User.currentUser match {
+          case f @ Full(user) => user.retrieveRoles.foldLeft(false)(_ || role.contains(_))
+          case _ => false
+        }
+
+      }
+
       def formLogin: LiftRules.DispatchPF = {
         case Req("form_login" :: Nil, _, PostRequest) if !loggedIn_? =>
           () => {
@@ -67,7 +75,7 @@ import net.liftweb.record.field.StringField
       }
 
       def retrieveRoles:Seq[String] = roles.is
-      def isInRole(role:String*): Boolean = retrieveRoles.foldLeft(false)(_ || role.contains(_))
+     
     }
   }
 

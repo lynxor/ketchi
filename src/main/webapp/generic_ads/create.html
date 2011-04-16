@@ -1,7 +1,7 @@
 <div class="lift:surround?with=default&at=content">
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <div>
-        Create a new Ad
+        <h1>Create a new ad</h1>
     </div>
     <div>
         <script>
@@ -32,8 +32,8 @@
                     show: function(event, ui){
                         var selected = $( "#tabs" ).tabs( "option", "selected" );
                         if(selected == 1){
-                             google.maps.event.trigger(map, 'resize');
-                             map.setCenter(new google.maps.LatLng(-26.195308, 28.043861));
+                            google.maps.event.trigger(map, 'resize');
+                            map.setCenter(new google.maps.LatLng(-26.195308, 28.043861));
                         }
                     }
                 });
@@ -103,7 +103,7 @@
                     to <input name="endDate" id="toDate"><br>
                 </div>
 
-                <div style="height:300px" id="images">
+                <div style="height:300px; overflow-y: auto;" id="images">
                     <input type="hidden" name="imageId" id="image_input" >
                     <table class="lift:ImageListing.asSelectTable">
 
@@ -115,9 +115,17 @@
                     <input value="Save" type="submit" >
                 </div>
                 <div id="tags">
-                    <span >This should be a comma separated list of items</span>
-                    <span style="color: red; font-weight: bold"> It is important to fill this in with care as it will be used for searches</span>
-                    Tags: <input name="tags" />
+                    <div>
+                        <span >This should be a comma separated list of items</span>
+                    </div>
+                   
+                    <div>
+                        Tags: <input name="tags" />
+                    </div>
+
+                    <div class="pleasenote">
+                        <span style="font-weight: bold"> It is important to fill this in with care as it will be used for searches</span>
+                    </div>
                 </div>
         </form>
     </div>
