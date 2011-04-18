@@ -3,6 +3,7 @@ package za.co.lastminute.snippet
 import  net.liftweb._
 import http._
 import common._
+import scala.util.matching.Regex
 import util.Helpers._
 import js._
 import JsCmds._
@@ -16,8 +17,9 @@ import za.co.lastminute.model.User
 
 
 object CreateGenericAd{
-   private val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
-
+  private val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
+  private val excludeWords = List("THE", "OR", "AND", "IN")  //Get a list somewhere
+  private val punctuationRegex  = new Regex("[\\w]+")
   
   private object header extends RequestVar("")
   private object content extends RequestVar("")
@@ -85,12 +87,13 @@ object CreateGenericAd{
       .lifeTime(LifeTime(dateFormatter.parseDateTime(startDate.get).toDate, dateFormatter.parseDateTime(endDate.get).toDate))
       .userId(User.currentUserId.get.toString)
       .imageId(imageId)
-      .tags(tags.is.split(",").toList)
+      .tags(tags.is.split(",").toList.map(_.toUpperCase) :::
+            punctuationRegex.findAllIn(content).map(_.toUpperCase).filter(!excludeWords.contains(_)).toList)  //get a library to do this better
       .save
 
       S.redirectTo("/generic_ads/view?ad_id="+newGAd._id.toString)
     }
-
+ 
     "name=header" #> SHtml.textElem(header) &
     "name=content" #> SHtml.textareaElem(content) &
     "name=contacts" #> SHtml.textElem(contacts) &

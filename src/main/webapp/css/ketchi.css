@@ -37,6 +37,13 @@ div .container{
     font-family: courier;
 }
 
+.comment_box{
+    background: none repeat scroll 0 0 grey;
+    border: 1px solid white;
+    padding: 5px;
+    margin-bottom: 4px;
+}
+
 .button{
     float: right;
     color: #DDDDDD
