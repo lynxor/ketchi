@@ -51,12 +51,6 @@
 
     <dependencies>
 
-         <dependency>
-            <groupId>com.foursquare</groupId>
-            <artifactId>rogue_${scala.version}</artifactId>
-            <version>1.0.6</version>
-        </dependency>
-        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -131,6 +125,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r09</version>
+        </dependency>
+        <dependency>
+            <artifactId>rogue_${scala.version}</artifactId>
+            <groupId>com.foursquare</groupId>
+            <version>1.0.6</version>
         </dependency>
     </dependencies>
 

@@ -62,7 +62,7 @@ class Boot {
     logUrl.foreach((x:URL) => Logger.setup = Full(Logback.withFile(x)))
 
     //EMAIL
-    configMailer("mail.ketchi.co.za", "dawid.malan@ketchi.co.za", "poffie")
+    configMailer("mail.ketchi.co.za", "dawid.malan@ketchi.co.za", "wh")
     
     /*
      * Show the spinny image when an Ajax call starts
@@ -98,7 +98,7 @@ class Boot {
 
   def configMailer(host: String, user: String, password: String) {
     // Enable TLS support
-    System.setProperty("mail.smtp.starttls.enable","true");
+    System.setProperty("mail.smtp.starttls.enable","false");
     // Set the host name
     System.setProperty("mail.smtp.host", host) // Enable authentication
     System.setProperty("mail.smtp.auth", "true") // Provide a means for authentication. Pass it a Can, which can either be Full or Empty

@@ -66,12 +66,12 @@ object UserSnippets {
 
     
     "#email" #> SHtml.ajaxText("text", (text:String) => {email = text; Noop}) &
-    "#request_par" #> SHtml.ajaxTextarea("toffie", (text: String) => {requestText = text; Noop}) &
+    "#request_par" #> SHtml.ajaxTextarea("Enter your request details here", (text: String) => {requestText = text; Noop}) &
     "#request_button" #> SHtml.ajaxButton("Request", () => {
         sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
                  PlainMailBodyType("email: "+email+"\n"+"request: "+requestText));
 
-        SetHtml("request_status", <span>Submitted</span>);
+        SetHtml("request_status", <span style="color: green">Submitted</span>) ;
       }) 
    
   }
