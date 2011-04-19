@@ -71,7 +71,7 @@ object UserSnippets {
         sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
                  PlainMailBodyType("email: "+email+"\n"+"request: "+requestText));
 
-        SetHtml("request_status", <span style="color: green">Submitted</span>) ;
+        SetHtml("request_status", <span style="color: green">Submitted</span>) & Alert("Your request has been submitted. You will receive an answer shortly") ;
       }) 
    
   }

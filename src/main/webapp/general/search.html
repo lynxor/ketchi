@@ -1,8 +1,6 @@
 <div id="main" class="lift:surround?with=default&at=content">
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <div>
-        <h2>Search</h2>
-    </div>
+
     <script type="text/javascript" >
         function RadiusWidget() {
             var circle = new google.maps.Circle({
@@ -155,23 +153,57 @@
         
 
     </script>
-    <form class="lift:form.ajax">
-        <div class="lift:Search">
-            <div id="search_map" style="height: 400px; width:600px"></div>
 
-            <input type="hidden" id="max_distance_input" >
-            <table>
-                <tr><td>Location</td> 
-                    <td>
-                        <span class="lift:Msg?id=latErr&errorClass=error">error</span><input name="lat" id="the_lat" value="0">
-                        <span class="lift:Msg?id=longErr&errorClass=error">error</span><input name="long" id="the_long" value="0">
-                    </td>
-                </tr>              
-                <tr><td/><td><input value="Search" type="submit"></td><td><input id="hide_search" type="button" value="^^" ></td></tr>
-
-            </table>
+    <div class="ui-widget ui-corner-all" >
+        <div class="ui-widget ui-widget-header ui-corner-all" style="display: block" onclick="toggleExpandedView('search_box','block')" onmouseover="hover(this)" onmouseout="unhover(this)">
+            <span style="font-size: 22px; padding: 5px">Search</span>
         </div>
-    </form>
+        <div id="search_box_expanded" class="ui-widget ui-widget-content ui-corner-all" style="padding: 5px">
+            <form class="lift:form.ajax">
+                <div class="lift:Search">
+                    <div id="search_map" style="height: 400px; width:600px"></div>
+
+                    <input type="hidden" id="max_distance_input" >
+                    <div class="ui-widget ui-widget-header ui-corner-all ui-state-default" style="display: block; margin-top: 5px">
+                        <span style="font-size: 22px; padding: 5px">Location</span>
+                    </div>
+                    <table style="width: 60%; margin-left: 10px">
+                        <tr>
+                            <td>Latitude</td>
+                            <td>
+                                <span class="lift:Msg?id=latErr&errorClass=error">error</span><input name="lat" id="the_lat" value="0" style="width: 100%">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Longitude</td>
+                            <td>
+                                <span class="lift:Msg?id=longErr&errorClass=error">error</span><input name="long" id="the_long" value="0" style="width: 100%" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="padding: 3px">
+                                <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                        style="float: right"
+                                        type="submit" role="button"
+                                        area-disabled="false"
+                                        onmouseover="hover(this)"
+                                        onmouseout="unhover(this)">
+                                    <span class="ui-button-text">Search</span>
+                                </button>
+
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </form>
+            <a class="ui-corner-all ui-state-default" title="Minimize search" href="#" style="float: right; margin-top: -15px" onclick="toggleExpandedView('search_box','block')">
+                <span class="ui-icon ui-icon-carat-1-n"></span>
+            </a>
+        </div>
+        <div id="search_box_compacted" style="display:none"></div>
+    </div>
 
     <div name="searchResults" id="search_results">No results</div>
 </div>

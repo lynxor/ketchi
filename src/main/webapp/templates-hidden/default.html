@@ -98,6 +98,7 @@
                 <div class="column span-17 last" style="width: 100%">
                     <div id="content" >
                         <!-- The HTML content will go here -->
+                        <span>whatever</span>
                     </div>
                 </div>
             </div>
@@ -108,9 +109,16 @@
                         <span>Search and view ads</span>
                     </div>
 
-                    <div class="lift:embed?what=/general/quicksearch"></div>
+                    <div class="lift:Search.quick">
+                        <span>Search:</span> <input id="search_box" id="search_box">
+                        <input id="quick_button"
+                               style="padding: 3px; float: right"
+                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                               onmouseover="hover(this)"
+                               onmouseout="unhover(this)"/>
+                    </div>
 
-                    <div class="lift:Menu.group?group=search" ></div>
+                    <div class="lift:Menu.group?group=search" >the search group comes here</div>
 
                 </div>
 
@@ -134,7 +142,7 @@
                                             <td>
                                                 <input type="submit" value="Login"
                                                        style="padding: 3px; float: right"
-                                                       class="ui-button ui-widget ui-state-default ui-corner-all"
+                                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                                        onmouseover="hover(this)"
                                                        onmouseout="unhover(this)"/>
                                             </td>
@@ -145,8 +153,6 @@
                                 <div><a href="/user_mgt/sign_up" >Sign up</a></div>
                             </form>
                         </div>
-
-
                     </div>
                 </lift:TestCond.loggedout>
 

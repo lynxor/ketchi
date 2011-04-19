@@ -70,11 +70,14 @@ object Search extends Logger{
   }
 
   def quick = {
-    def process(value:String) = {
-      val ads = GenericAd where (_.tags contains value) fetch;
+
+    var text = ""
+    def process() = {
+      val ads = GenericAd where (_.tags contains text.toUpperCase) fetch;
       SetHtml("main_content", ads.map(_.getMarkup)) & Focus("search_box")
     }
-    "name=searchBox" #> SHtml.ajaxText("special", process(_))
+    "#search_box" #> SHtml.ajaxText("", (x:String) => {text = x;Noop}) &
+    "#quick_button" #> SHtml.ajaxButton(<span>go</span>, () => process)
   }
 }
 

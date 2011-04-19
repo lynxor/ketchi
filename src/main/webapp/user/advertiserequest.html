@@ -1,33 +1,39 @@
 <div class="lift:surround?with=default;at=content">
 
     <div class="lift:UserSnippets.advertiseRequest">
-        <h1>Request for advertising on this site</h1>
-        <table>
-            <tr>
-                <td>Email</td>
-                <td>
-                    <input id="email" type="text" >
-                </td>
-            </tr>
-            <tr>
-                <td>Describe the type of ads that you would like to place, including for who this is etc.</td>
+        <div class="ui-widget ui-corner-all" >
+            <div class="ui-widget ui-widget-header ui-corner-all" style="display: block" >
+                <span style="font-size: 22px; padding: 5px">Request for advertising on this site</span>
+            </div>
+            <div class="ui-widget ui-widget-content ui-corner-all" style="padding: 5px">
+                <table>
+                    <tr>
+                        <td>Email</td>
+                        <td>
+                            <input id="email" type="text" >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Describe the type of ads that you would like to place, including for who this is etc.</td>
 
-                <td>
-                    <input id="request_par" type="text"/>
-                </td>
-            </tr>
-            <tr><td></td>
-                <td>
-                    <input id="request_button" 
-                           type="button"
-                           style="float: right; padding: 3px;"
-                           class="ui-button ui-widget ui-state-default ui-corner-all"
-                           onmouseover="hover(this)"
-                           onmouseout="unhover(this)"/>
-                </td>
-            </tr>
-        </table>
-        <span id="request_status" >Not submitted</span>
+                        <td>
+                            <input id="request_par" type="text"/>
+                        </td>
+                    </tr>
+                    <tr><td></td>
+                        <td>
+                            <input id="request_button"
+                                   type="button"
+                                   style="float: right; padding: 3px;"
+                                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                   onmouseover="hover(this)"
+                                   onmouseout="unhover(this)"/>
+                        </td>
+                    </tr>
+                </table>
+                <span id="request_status" style="padding: 5px">Not submitted</span>
+            </div>
+        </div>
     </div>
 </div>
 

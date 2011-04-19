@@ -49,7 +49,7 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
         class="ui-widget-header ui-corner-all ad_header ui-state-default"
         onmouseover="hover(this)"
         onmouseout="unhover(this)"
-        onclick={"toggleExpandedView('"+this._id.toString+"');"}>
+        onclick={"toggleExpandedView('"+this._id.toString+"','block');"}>
         
         <span >{this.header}</span>
       </div>

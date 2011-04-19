@@ -1,25 +1,27 @@
-function toggleExpandedView(id){
+// showStyle is block or inline
+function toggleExpandedView(id, showStyle){
     
     expandedId = id+"_expanded";
     compactedId = id+"_compacted";
     buttonId = id+"_toggleButton";
     
-    expandedShowing = $("#"+expandedId).css('display') == 'inline';
+    expandedShowing = $("#"+expandedId).css('display') == showStyle;
     
     if(expandedShowing){
         $("#"+expandedId).css('display', 'none');
-        $("#"+compactedId).css('display', 'inline');
-        $("#"+buttonId).removeClass("ui-icon-minusthick");
-        $("#"+buttonId).addClass("ui-icon-plusthick");
+        $("#"+compactedId).css('display', showStyle);
+     //   $("#"+buttonId).removeClass("ui-icon-minusthick");
+     //   $("#"+buttonId).addClass("ui-icon-plusthick");
 
     }
     else {
-        $("#"+expandedId).css('display', 'inline');
+        $("#"+expandedId).css('display', showStyle);
         $("#"+compactedId).css('display', 'none');
-        $("#"+buttonId).removeClass("ui-icon-plusthick");
-        $("#"+buttonId).addClass("ui-icon-minusthick");
+       // $("#"+buttonId).removeClass("ui-icon-plusthick");
+       // $("#"+buttonId).addClass("ui-icon-minusthick");
     }
 }
+
 
 function hover(item){
     $(item).addClass("ui-state-hover");
