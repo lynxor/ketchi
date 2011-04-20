@@ -10,7 +10,7 @@ import scala.xml.Elem
 import scala.xml.Node
 import scala.xml.NodeBuffer
 import za.co.lastminute.model._
-import za.co.lastminute.model.generic_ad._
+import generic_ad._
 import Helpers._
 import java.util.Date
 import  js._
@@ -41,6 +41,9 @@ object View {
 
 object Search extends Logger{
 
+  implicit def fromStringSearch(searchString: String):StringSearch = StringSearch(searchString, new Date())
+  implicit def fromLatLong(latLng: LatLong):LocationSearch = LocationSearch(latLng, new Date())
+    
   val defaultDegrees = 0.8997
   def render = {
     var lat = -26.195308
@@ -50,9 +53,9 @@ object Search extends Logger{
 
     def process:JsCmd = {
       info("Searching with inputs: lat&long: "+lat+","+long+" distance in degrees: "+degrees)
-      
-      val searchByDeg = GenericAd where (_.location near (lat, long, Degrees(degrees))) fetch
+      val searchByDeg = GenericAd where (_.location near (lat, long, Degrees(degrees))) fetch;
 
+     // User.storeSearch(LatLong(lat, long))
       //val searchResults = <span>appel</span>//GenericAd.findAll("location" -> ( "$near" -> List(asDouble(lat).getOrElse(0.0), asDouble(long).getOrElse(0.0) ))~("$maxDistance" -> asDouble(max_distance_input).getOrElse(0.0))).map(_.getMarkup)
       SetHtml("search_results", searchByDeg.map(_.getMarkup))
     }
@@ -73,12 +76,16 @@ object Search extends Logger{
 
     var text = ""
     def process() = {
+      User.storeSearch(text) 
       val ads = GenericAd where (_.tags contains text.toUpperCase) fetch;
       SetHtml("main_content", ads.map(_.getMarkup)) & Focus("search_box")
     }
     "#search_box" #> SHtml.ajaxText("", (x:String) => {text = x;Noop}) &
     "#quick_button" #> SHtml.ajaxButton(<span>go</span>, () => process)
   }
+
+ 
+  
 }
 
 object Commenting extends Logger{
@@ -117,16 +124,16 @@ object Commenting extends Logger{
   def buildComments(adId:String):NodeSeq = {
     val ad = (GenericAd where (_._id eqs new ObjectId(adId)) fetch).head
    
-     ad.comments.is match{
+    ad.comments.is match{
       case list: List[Comment] if(!list.isEmpty) => { list.map((comment: Comment) => {
-        <div class="ui-widget ui-corner-all comment_box">
-          <div>
-            <p>{comment.comment}</p>
-          </div>
-          <span>{"by "+comment.commenter +" on "+comment.date}</span>
-        </div>
-      }).flatMap(_.toSeq)
-      }
+              <div class="ui-widget ui-corner-all comment_box">
+                <div>
+                  <p>{comment.comment}</p>
+                </div>
+                <span>{"by "+comment.commenter +" on "+comment.date}</span>
+              </div>
+            }).flatMap(_.toSeq)
+        }
       case _ => <div><span>No comments</span></div>
     }  
   }
