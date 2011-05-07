@@ -15,8 +15,8 @@ import js._
 import JsCmds._
 
 case class Address(lat:String, long:String, address:String, city:String, state:String, country:String) {
-  def toXhtml()={
-    <div class={"address_result ui-corner-all"}>
+  def toXhtml={
+
     <table>
       <tr>
         <td><span>Lat Long</span></td><td><span>{"("+lat +", "+long+")"}</span></td>
@@ -33,12 +33,31 @@ case class Address(lat:String, long:String, address:String, city:String, state:S
       <tr>
         <td><span>Country</span></td><td><span>{country}</span></td>
       </tr>
-      <tr>
-        <td><a href={"/general/search?lat="+lat+"&long="+long}>Search with this location</a></td>
-      </tr> 
     </table>
+
+  }
+  
+  def toSearchXhml = {
+    <div class="ui-corner-all address_result">
+      {toXhtml}  
+      <a href={"/general/search?lat="+lat+"&long="+long}>Search with this location</a>
     </div>
   }
+  
+  def toSetLatLngXhml = {
+    <div class="ui-corner-all address_result">
+      {toXhtml}
+      <input type="button" 
+        class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        style="padding: 3px"
+        onclick={"$('#the_lat').val('"+lat+"');$('#the_long').val('"+long+"');"}
+        onmouseover="hover(this)"
+        onmouseout="unhover(this)"
+        value="Set location">
+      </input>
+    </div>
+  }
+
 }
 
 trait GeoCodingService{
@@ -99,7 +118,17 @@ object GeoCodingSnippet {
     "#province" #> SHtml.ajaxSelect(provinces.map((prov) => (prov, prov)), Full("Gauteng"), (prov) => { province.apply(prov);Noop}) &
     "#geocode_button" #> SHtml.ajaxButton("Find", () => {
         val service:GeoCodingService = new YahooGeoCodingService
-        val transformedAddress = service.findLatLong(address, province).map(_.toXhtml)
+        val transformedAddress = service.findLatLong(address, province).map(_.toSearchXhml)
+        SetHtml("addressesFound", NodeSeq.fromSeq(transformedAddress.flatMap(_.toList)))
+      })
+  }
+  
+  def locationFromNameSetLatLong = {
+    "#address" #> SHtml.ajaxTextElem(address) &
+    "#province" #> SHtml.ajaxSelect(provinces.map((prov) => (prov, prov)), Full("Gauteng"), (prov) => { province.apply(prov);Noop}) &
+    "#geocode_button" #> SHtml.ajaxButton("Find", () => {
+        val service:GeoCodingService = new YahooGeoCodingService
+        val transformedAddress = service.findLatLong(address, province).map(_.toSetLatLngXhml)
         SetHtml("addressesFound", NodeSeq.fromSeq(transformedAddress.flatMap(_.toList)))
       })
   }

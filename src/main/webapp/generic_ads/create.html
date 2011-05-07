@@ -67,6 +67,13 @@
                     selected_radio = $("input:radio:checked").attr("value")
                     $("#image_input").val(selected_radio);
                 })
+                
+                $("#address_search_dialogue").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    width: 465,
+                    height: 300
+                })
             })
             
         </script>
@@ -91,10 +98,44 @@
                     </table>
                 </div>
                 <div id="location">
-                    <div id="map_canvas" style="height: 400px; width:600px"></div>
-                    Lat: <input name="lat" id="the_lat">
-                    Long: <input name="long" id="the_long" style="padding-left: 5px"><br>
+                    <div id="map_canvas" style="height: 400px; width:580px"></div>
+                    <div style="padding: 10px">
+                        Lat: <input name="lat" id="the_lat">
+                        Long: <input name="long" id="the_long" style="padding-left: 5px"><br>
+                    </div>
 
+                    <div id="address_search_dialogue" title="Find address" >
+                        <div class="lift:GeoCodingSnippet.locationFromNameSetLatLong" >
+                            <div style="padding: 15px">
+                                Address <input id="address" ><br>
+                                Province <input id="province"></br>
+                                <input id="geocode_button" 
+                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                       style="padding: 3px"
+                                       onmouseover="hover(this)"
+                                       onmouseout="unhover(this)"/>
+                            </div>
+                            <div id="addressesFound" ></div>
+                        </div>
+
+                    </div>
+                    <input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                           style="padding: 3px"
+                           type="button" 
+                           onclick="$('#address_search_dialogue').dialog('open')" 
+                           value="Find address"
+                           onmouseover="hover(this)"
+                           onmouseout="unhover(this)"/>
+
+                    <!--                    <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                                style="float: right"
+                                                role="button"
+                                                area-disabled="false"
+                                                onmouseover="hover(this)"
+                                                onmouseout="unhover(this)"
+                                                onclick="$('#address_search_dialogue').dialog('open');">
+                                            <span class="ui-button-text">Find by location name</span>
+                                        </button>-->
                 </div>
 
 
@@ -112,13 +153,13 @@
 
                                                 <tr><td/><td><input type="button" id="uploadImage"></td></tr>-->
                     </table>
-                    <input value="Save" type="submit" >
+                    <input id="create_ad_button" value="Save" type="submit" >
                 </div>
                 <div id="tags">
                     <div>
                         <span >This should be a comma separated list of items</span>
                     </div>
-                   
+
                     <div>
                         Tags: <input name="tags" />
                     </div>
@@ -128,6 +169,7 @@
                     </div>
                 </div>
         </form>
+
     </div>
 </div>
 

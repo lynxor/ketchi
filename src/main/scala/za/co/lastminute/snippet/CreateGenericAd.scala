@@ -4,6 +4,7 @@ import  net.liftweb._
 import http._
 import common._
 import scala.util.matching.Regex
+import scala.xml.NodeSeq
 import util.Helpers._
 import js._
 import JsCmds._
@@ -31,6 +32,9 @@ object CreateGenericAd{
   private object startDate extends RequestVar(dateFormatter.print(new DateTime()))
   private object endDate extends RequestVar(dateFormatter.print(new DateTime().plusDays(7)))
   private object tags extends RequestVar("special")
+  
+  private object address extends RequestVar("Sandton")
+  private object province extends RequestVar("Gauteng")
 
   def render = {
 
@@ -105,7 +109,7 @@ object CreateGenericAd{
     "name=endDate" #> SHtml.textElem(endDate) &
     "name=imageId" #> SHtml.hidden((x:String) => {imageId = Full(x)}, "") &
     "name=tags" #> SHtml.textElem(tags) &
-    "type=submit"  #> SHtml.onSubmitUnit(() => process)
+    "#create_ad_button"  #> SHtml.onSubmitUnit(() => process)
   }
 
    

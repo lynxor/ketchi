@@ -78,14 +78,22 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
           </ul>
         </div>
         <div id={this._id.toString+"_comments"} class="lift:Commenting.comment">
-          <span>Comments:</span>
+          
           <lift:TestCond.loggedin>
+            <span style="margin-bottom: 5px">Give us your thoughts!</span>
             <div style="width: 300px">
               <input id="new_comment_text" type="text" style="display:block" ></input>
-              <input id="new_comment_add_button" type="button" style="float: right"></input>
+              <input id="new_comment_add_button" 
+                type="button" 
+                style="margin-bottom: 15px; padding: 3px"
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                onmouseover="hover(this)"
+                onmouseout="unhover(this)">
+              </input>
             </div>
-         
+            
           </lift:TestCond.loggedin>
+          <span style="margin-bottom: 10px">What other users thought</span>
           <div id="comments" >comments here</div>
         </div>
       </div>
