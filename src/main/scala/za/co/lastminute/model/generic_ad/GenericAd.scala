@@ -55,14 +55,14 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
       </div>
       
       <div id={this._id.toString+"_expanded"} style={"display:none;"} class="ui-widget-content ui-corner-bottom">
-        <img src={"/images/"+this.imageId} alt="Cannot display image" style="display: block; padding 10px" />
+        <img src={"/images/"+this.imageId} alt="Cannot display image" style="display: block; padding: 15px; float:right" />
         <div class={"borderbox"}>{this.contents}</div>
         <br></br>
         <div class={"borderbox"}>
-          Location : {this.location.is.lat +", "+ this.location.is.long}
+          Location : {"("+this.location.is.lat +", "+ this.location.is.long +")"}
         </div>
         <div class={"borderbox"}>
-          <h4>Contact Information:</h4>
+          <span>Contact Information:</span>
           <ul>
             <li><div>{this.contactInfo}</div></li>
             <li>
@@ -78,7 +78,7 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
           </ul>
         </div>
         <div id={this._id.toString+"_comments"} class="lift:Commenting.comment">
-          <h2>Comments:</h2>
+          <span>Comments:</span>
           <lift:TestCond.loggedin>
             <div style="width: 300px">
               <input id="new_comment_text" type="text" style="display:block" ></input>

@@ -50,7 +50,8 @@ class Boot {
       Menu.i("Create a new ad") / "generic_ads" / "create" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
       Menu.i("View Stats") / "stats" / "viewstats" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
       Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client"),
-      Menu.i("Advertise here!") / "user" / "advertiserequest" >> If(() => !User.loggedIn_?, S ? "Can't do for existing user" ) >> LocGroup("client"))
+      Menu.i("Advertise here!") / "user" / "advertiserequest" >> If(() => !User.loggedIn_?, S ? "Can't do for existing user" ) >> LocGroup("client"),
+      Menu.i("GeoCoding test") / "geocode" / "geocode" >> LocGroup("bottom"))
     
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 

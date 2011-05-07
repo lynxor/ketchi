@@ -18,8 +18,8 @@ import scala.collection.JavaConversions._
 object ImageListing{
   def render = {
     "#images_list" #> {findFilesForCurrentUser match {
-        case a:Full[Iterable[GridFSDBFile]] => a.get.map((x:GridFSDBFile) => (<div><img src={"/images/"+x.getId.toString} alt={x.getFilename}></img></div>))
-        case Empty => (<span>Could not retrieve files</span>)
+        case a @ Full(i:Iterable[GridFSDBFile]) => i.map((x:GridFSDBFile) => (<div><img src={"/images/"+x.getId.toString} alt={x.getFilename}></img></div>))
+        case _ => (<span>Could not retrieve files</span>)
       }}}
 
   

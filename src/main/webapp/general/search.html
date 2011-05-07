@@ -133,9 +133,9 @@
             this.set('radius', this.get('distance') * 1000);
         };
 
-        function initSearchMaps(){
-         
-            var latlng = new google.maps.LatLng(-26.195308, 28.043861);
+        function initSearchMaps(lat, lng){
+            
+            var latlng = new google.maps.LatLng(lat, lng);
             var myOptions = {
                 zoom: 8,
                 center: latlng,
@@ -147,7 +147,16 @@
         }
 
         $("#search_map").ready(function(){
-            initSearchMaps()
+            var lat = $("#the_lat").val();
+            var lng = $("#the_long").val()
+            initSearchMaps(lat, lng)
+            
+            $("#address_search_dialogue").dialog({
+                autoOpen: false,
+                modal: true,
+                width: 465,
+                height: 300
+            })
         })
 
         
@@ -185,6 +194,16 @@
                             <td style="padding: 3px">
                                 <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                         style="float: right"
+                                        role="button"
+                                        area-disabled="false"
+                                        onmouseover="hover(this)"
+                                        onmouseout="unhover(this)"
+                                        onclick="$('#address_search_dialogue').dialog('open');">
+                                    <span class="ui-button-text">Find by location name</span>
+                                </button>
+
+                                <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                        style="float: right"
                                         type="submit" role="button"
                                         area-disabled="false"
                                         onmouseover="hover(this)"
@@ -206,4 +225,19 @@
     </div>
 
     <div name="searchResults" id="search_results">No results</div>
+
+    <div id="address_search_dialogue" title="Address Search">
+        <div class="lift:GeoCodingSnippet.locationFromName" >
+            <div style="padding: 15px">
+                Address <input id="address" ><br>
+                Province <input id="province"></br>
+                <input id="geocode_button" 
+                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                       style="padding: 3px"
+                       onmouseover="hover(this)"
+                       onmouseout="unhover(this)"/>
+            </div>
+            <div id="addressesFound" ></div>
+        </div>
+    </div>
 </div>

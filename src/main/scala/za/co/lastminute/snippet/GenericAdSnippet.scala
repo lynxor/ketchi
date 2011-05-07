@@ -10,7 +10,7 @@ import scala.xml.Elem
 import scala.xml.Node
 import scala.xml.NodeBuffer
 import za.co.lastminute.model._
-import generic_ad._
+import za.co.lastminute.model.generic_ad._
 import Helpers._
 import java.util.Date
 import  js._
@@ -18,6 +18,8 @@ import JsCmds._
 import com.foursquare.rogue.Rogue._
 import com.foursquare.rogue.LatLong
 import com.foursquare.rogue.Degrees
+
+
 
 
 case class ParamInfo(theParam: String)
@@ -46,8 +48,9 @@ object Search extends Logger{
     
   val defaultDegrees = 0.8997
   def render = {
-    var lat = -26.195308
-    var long = 28.043861
+    var lat = S.param("lat").getOrElse("-26.195308").toDouble
+    var long = S.param("long").getOrElse("28.043861").toDouble
+    
     var categories:List[String] = Nil
     var degrees = defaultDegrees //in degrees
 
