@@ -10,6 +10,8 @@ import net.liftweb.mongodb.record.MongoRecord
 import net.liftweb.mongodb.record.field._
 import net.liftweb.record.field._
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import scala.xml.Elem
 import com.foursquare.rogue.LatLong
 import com.foursquare.rogue.Rogue._
@@ -60,6 +62,9 @@ class GenericAd extends MongoRecord[GenericAd] with MongoId[GenericAd] {
         <br></br>
         <div class={"borderbox"}>
           Location : {"("+this.location.is.lat +", "+ this.location.is.long +")"}
+        </div>
+        <div class={"borderbox"}>
+          Validity : {this.lifeTime.is}
         </div>
         <div class={"borderbox"}>
           <span>Contact Information:</span>
@@ -125,8 +130,14 @@ object GenericAd extends GenericAd with MongoMetaRecord[GenericAd]{}
 
 case class LifeTime(startDate:Date, endDate:Date) extends JsonObject[LifeTime]{
   def meta = LifeTime
+  val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
+  override def toString = {
+    "From "+dateFormatter.print(new DateTime(startDate))+" to "+dateFormatter.print(new DateTime(endDate));
+  }
 }
-object LifeTime extends JsonObjectMeta[LifeTime]{}
+object LifeTime extends JsonObjectMeta[LifeTime]{
+  
+}
 
 
 case class Comment(commenter:String, comment:String, date:Date) extends JsonObject[Comment]{

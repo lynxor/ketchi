@@ -159,6 +159,23 @@
             })
         })
 
+        $(function() {
+            var dates = $( "#start_date, #end_date" ).datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 3,
+                dateFormat: "yy/mm/dd",
+                onSelect: function( selectedDate ) {
+                    var option = this.id == "startDate" ? "minDate" : "maxDate",
+                    instance = $( this ).data( "datepicker" );
+                    date = $.datepicker.parseDate(
+                    instance.settings.dateFormat ||
+                        $.datepicker._defaults.dateFormat,
+                    selectedDate, instance.settings );
+                    dates.not( this ).datepicker( "option", option, date );
+                }
+            });
+        });
         
 
     </script>
@@ -202,19 +219,34 @@
                                     <span class="ui-button-text">Find by location name</span>
                                 </button>
 
-                                <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                        style="float: right"
-                                        type="submit" role="button"
-                                        area-disabled="false"
-                                        onmouseover="hover(this)"
-                                        onmouseout="unhover(this)">
-                                    <span class="ui-button-text">Search</span>
-                                </button>
 
                             </td>
                         </tr>
 
                     </table>
+                    <div class="ui-widget ui-widget-header ui-corner-all ui-state-default" style="display: block; margin-top: 5px">
+                        <span style="font-size: 22px; padding: 5px">Keyword Search</span>
+                    </div>
+                    <div style="padding: 10px">
+                        <span>Search:</span> <input id="string_query">
+                    </div>
+                    <div class="ui-widget ui-widget-header ui-corner-all ui-state-default" style="display: block; margin-top: 5px">
+                        <span style="font-size: 22px; padding: 5px">Time</span>
+                    </div>
+                    <div style="padding: 10px">
+                        From date: <input id="start_date">
+                        to <input id="end_date"><br>
+                    </div>
+                    <div>
+                        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                type="submit" role="button"
+                                area-disabled="false"
+                                onmouseover="hover(this)"
+                                onmouseout="unhover(this)">
+                            <span class="ui-button-text">Search</span>
+                        </button>
+                    </div>
+
                 </div>
             </form>
             <a class="ui-corner-all ui-state-default" title="Minimize search" href="#" style="float: right; margin-top: -15px" onclick="toggleExpandedView('search_box','block')">
@@ -224,7 +256,7 @@
         <div id="search_box_compacted" style="display:none"></div>
     </div>
 
-    <div name="searchResults" id="search_results">No results</div>
+    <div id="search_results">No results</div>
 
     <div id="address_search_dialogue" title="Address Search">
         <div class="lift:GeoCodingSnippet.locationFromName" >

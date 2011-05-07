@@ -6,6 +6,9 @@ import _root_.net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.http.js.JsCmd
 import org.bson.types.ObjectId
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import scala.xml.Elem
 import scala.xml.Node
 import scala.xml.NodeBuffer
@@ -42,21 +45,32 @@ object View {
 }
 
 object Search extends Logger{
-
+  private val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
   implicit def fromStringSearch(searchString: String):StringSearch = StringSearch(searchString, new Date())
   implicit def fromLatLong(latLng: LatLong):LocationSearch = LocationSearch(latLng, new Date())
     
   val defaultDegrees = 0.8997
   def render = {
+    
     var lat = S.param("lat").getOrElse("-26.195308").toDouble
     var long = S.param("long").getOrElse("28.043861").toDouble
-    
-    var categories:List[String] = Nil
+    var stringQuery = S.param("q").getOrElse("")
+    var startDate = new Date
+    var endDate = (new DateTime).plusDays(7).toDate
+
     var degrees = defaultDegrees //in degrees
 
     def process:JsCmd = {
-      info("Searching with inputs: lat&long: "+lat+","+long+" distance in degrees: "+degrees)
-      val searchByDeg = GenericAd where (_.location near (lat, long, Degrees(degrees))) fetch;
+      info("Searching with inputs: lat&long: "+lat+","+long+" distance in degrees: "+degrees+" , from "+startDate+" to "+endDate+", and with query: "+stringQuery)
+      val date = new Date
+      val searchByDegAll = GenericAd where (_.location near (lat, long, Degrees(degrees))) and (_.tags contains stringQuery.toUpperCase) fetch;
+      info("Found results!! "+searchByDegAll.map(_.header))
+      //filter afterwards?? fix somehow
+      val searchByDeg = searchByDegAll.filter((a:GenericAd) => {         
+          a.lifeTime.is.endDate.compareTo(startDate) >= 0 &&
+          a.lifeTime.is.startDate.compareTo(endDate) <= 0
+      })
+          
 
      // User.storeSearch(LatLong(lat, long))
       //val searchResults = <span>appel</span>//GenericAd.findAll("location" -> ( "$near" -> List(asDouble(lat).getOrElse(0.0), asDouble(long).getOrElse(0.0) ))~("$maxDistance" -> asDouble(max_distance_input).getOrElse(0.0))).map(_.getMarkup)
@@ -65,23 +79,23 @@ object Search extends Logger{
     
     "name=lat" #> SHtml.text(lat.toString, (x:String) => lat = asDouble(x).getOrElse(0.0)) &
     "name=long" #> SHtml.text(long.toString, (x:String) => long = asDouble(x).getOrElse(0.0)) &
-    "id=max_distance_input" #> (SHtml.hidden((x:String) => {
+    "#string_query" #> SHtml.text(stringQuery, (x:String) => stringQuery = x) &
+    "#start_date" #> SHtml.text(dateFormatter.print(new DateTime(startDate)), (s:String) => startDate = dateFormatter.parseDateTime(s).toDate) &
+    "#end_date" #> SHtml.text(dateFormatter.print(new DateTime(endDate)), (s:String) => endDate = dateFormatter.parseDateTime(s).toDate) &
+    "#max_distance_input" #> (SHtml.hidden((x:String) => {
           val distanceInKm = asDouble(x).getOrElse(100.0)
           degrees = (distanceInKm/6371)*180/math.Pi
           process
         }, "100.0") )
-  
-   
 
   }
 
   def quick = {
-
     var text = ""
     def process() = {
       User.storeSearch(text) 
       val ads = GenericAd where (_.tags contains text.toUpperCase) fetch;
-      SetHtml("main_content", ads.map(_.getMarkup)) & Focus("search_box")
+      SetHtml("main_content", ads.filter(_.lifeTime.is.endDate.compareTo(new Date) >= 0).map(_.getMarkup)) & Focus("search_box")
     }
     "#search_box" #> SHtml.ajaxText("", (x:String) => {text = x;Noop}) &
     "#quick_button" #> SHtml.ajaxButton(<span>go</span>, () => process)
