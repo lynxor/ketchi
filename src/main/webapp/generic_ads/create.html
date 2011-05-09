@@ -96,6 +96,14 @@
                         <tr> <td>Link to your website: </td><td><input name="link" id="the_link"></td></tr>
                         <tr> <td>Contact email: </td><td><input name="email" id="the_email"></td></tr>
                     </table>
+                    <div style="height: 25px;">
+                        <input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only next_button"
+                               type="button" 
+                               onclick="$('#tabs').tabs( 'option', 'selected', 1 )" 
+                               value="Next"
+                               onmouseover="hover(this)"
+                               onmouseout="unhover(this)"/>
+                    </div>
                 </div>
                 <div id="location">
                     <div id="map_canvas" style="height: 400px; width:580px"></div>
@@ -127,21 +135,29 @@
                            onmouseover="hover(this)"
                            onmouseout="unhover(this)"/>
 
-                    <!--                    <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                                style="float: right"
-                                                role="button"
-                                                area-disabled="false"
-                                                onmouseover="hover(this)"
-                                                onmouseout="unhover(this)"
-                                                onclick="$('#address_search_dialogue').dialog('open');">
-                                            <span class="ui-button-text">Find by location name</span>
-                                        </button>-->
+
+                    <input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only next_button"
+                           type="button" 
+                           onclick="$('#tabs').tabs( 'option', 'selected', 2 )" 
+                           value="Next"
+                           onmouseover="hover(this)"
+                           onmouseout="unhover(this)"/>
+
                 </div>
 
 
                 <div id="time">
                     From date: <input name="startDate" id="fromDate">
                     to <input name="endDate" id="toDate"><br>
+
+                    <div style="height: 25px;">
+                        <input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only next_button"
+                               type="button" 
+                               onclick="$('#tabs').tabs( 'option', 'selected', 3 )" 
+                               value="Next"
+                               onmouseover="hover(this)"
+                               onmouseout="unhover(this)"/>
+                    </div>
                 </div>
 
                 <div style="height:300px; overflow-y: auto;" id="images">
@@ -153,19 +169,30 @@
 
                                                 <tr><td/><td><input type="button" id="uploadImage"></td></tr>-->
                     </table>
-                    <input id="create_ad_button" value="Save" type="submit" >
+                    <div style="height: 25px;">
+                        <input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only next_button"
+                               type="button" 
+                               onclick="$('#tabs').tabs( 'option', 'selected', 4 )" 
+                               value="Next"
+                               onmouseover="hover(this)"
+                               onmouseout="unhover(this)"/>
+                    </div>
                 </div>
                 <div id="tags">
-                    <div>
-                        <span >This should be a comma separated list of items</span>
-                    </div>
-
-                    <div>
-                        Tags: <input name="tags" />
+                    <div style="margin-top: 10px; margin-bottom: 10px">
+                        Tags: <input name="tags" style="width: 60%" />
                     </div>
 
                     <div class="pleasenote">
-                        <span style="font-weight: bold"> It is important to fill this in with care as it will be used for searches</span>
+                        <span style="font-weight: bold">This should be a comma separated list of items. It is important to fill this in with care as it will be used for searches</span>
+                    </div>
+                    <div style="height: 25px;">
+                        <input id="create_ad_button" 
+                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only next_button"
+                               value="Save"
+                               type="submit" 
+                               onmouseover="hover(this)"
+                               onmouseout="unhover(this)" />
                     </div>
                 </div>
         </form>

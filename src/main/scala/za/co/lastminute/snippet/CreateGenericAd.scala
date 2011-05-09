@@ -31,21 +31,23 @@ object CreateGenericAd{
   private object long extends RequestVar("28.043861")
   private object startDate extends RequestVar(dateFormatter.print(new DateTime()))
   private object endDate extends RequestVar(dateFormatter.print(new DateTime().plusDays(7)))
-  private object tags extends RequestVar("special")
+  private object tags extends RequestVar("special, amazing")
   
   private object address extends RequestVar("Sandton")
   private object province extends RequestVar("Gauteng")
+  private object whence extends RequestVar(S.referer openOr "/")
 
+  
   def render = {
 
 
     var imageId:Box[String] = Empty
     var currentAd: Box[GenericAd] = Empty
-
+    val w = whence.is
+    
     currentAd = tryToInitFromParams
     currentAd match{
-      case f:Full[GenericAd] => {
-          val ad = f.get
+      case Full(ad:GenericAd) => {
           header.set(ad.header.is)
           content.set(ad.contents.is)
           contacts.set(ad.contactInfo.is)
@@ -64,11 +66,11 @@ object CreateGenericAd{
     
     def tryToInitFromParams:Box[GenericAd] = {
       S.param("ad_id") match{
-        case a: Full[String] => {
-            GenericAd.find(a.get)
+        case Full(a: String) => {
+            GenericAd.find(a)
           }
-        case a:Failure => println("Error occurred trying to edit ad "+a.toString);Empty
-        case Empty => Empty
+        case _ => Empty
+
 
       }
     }
@@ -80,7 +82,14 @@ object CreateGenericAd{
         case _ => {
             GenericAd.createRecord
           }
-      }
+      };
+      
+      var validated = true
+      if(header.isEmpty)
+         S.error("Please provide a header for your add")
+
+    
+      
 
       newGAd.header(header)
       .contents(content)
@@ -98,7 +107,7 @@ object CreateGenericAd{
       S.redirectTo("/generic_ads/view?ad_id="+newGAd._id.toString)
     }
  
-    "name=header" #> SHtml.textElem(header) &
+    "name=header" #> (SHtml.textElem(header) ++ SHtml.hidden(() => whence.set(w))) &
     "name=content" #> SHtml.textareaElem(content) &
     "name=contacts" #> SHtml.textElem(contacts) &
     "name=link" #> SHtml.textElem(link) &
