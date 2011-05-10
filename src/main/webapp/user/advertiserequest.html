@@ -1,6 +1,25 @@
 <div class="lift:surround?with=default;at=content">
 
-    <div class="lift:UserSnippets.advertiseRequest">
+    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+    <script type="text/javascript">
+
+        function setHidden(){
+            $("#challenge").val(Recaptcha.get_challenge());
+            $("#challenge_response").val(Recaptcha.get_response());
+        }
+        function initReCaptcha(){
+            Recaptcha.create("6Lf6PMQSAAAAANYmb-BYDxXHkq1y4IiYBfORxk9Y", "recaptcha_div", {
+                theme: "red"
+            });
+            
+        
+        }
+        $(document).ready(function(){
+            initReCaptcha()
+        });
+    </script>
+
+    <form class="lift:UserSnippets.advertiseRequest?form=post" onsubmit="setHidden();">
         <div class="ui-widget ui-corner-all" >
             <div class="ui-widget ui-widget-header ui-corner-all" style="display: block" >
                 <span style="font-size: 22px; padding: 5px">Request for advertising on this site</span>
@@ -20,20 +39,21 @@
                             <input id="request_par" type="text"/>
                         </td>
                     </tr>
-                    <tr><td></td>
-                        <td>
-                            <input id="request_button"
-                                   type="button"
-                                   style="float: right; padding: 3px;"
-                                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                   onmouseover="hover(this)"
-                                   onmouseout="unhover(this)"/>
-                        </td>
-                    </tr>
                 </table>
-                <span id="request_status" style="padding: 5px">Not submitted</span>
+                <div id="recaptcha_div" >The recaptcha div</div>
+                <div style="height: 25px;">
+                    <input id="request_button"
+                           type="submit"
+                           style="float: right; padding: 3px;"
+                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                           onmouseover="hover(this)"
+                           onmouseout="unhover(this)"/>
+
+                    <input id="challenge" />
+                    <input id="challenge_response" />
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 

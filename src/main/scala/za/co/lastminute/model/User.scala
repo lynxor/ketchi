@@ -38,7 +38,7 @@ package za.co.lastminute.model {
 //                                     locale, timezone, password)
 
     // comment this line out to require email validations
-    override def skipEmailValidation = false
+    override def skipEmailValidation = true
 
     def isCurrentUserInRole(role:String*): Boolean = {
       User.currentUser match {

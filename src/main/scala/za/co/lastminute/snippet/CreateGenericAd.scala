@@ -85,26 +85,40 @@ object CreateGenericAd{
       };
       
       var validated = true
-      if(header.isEmpty)
-         S.error("Please provide a header for your add")
-
-    
       
+      //Is there a better way?? Probably
+      if(header.isEmpty){ S.error("Please provide a header for your add");validated = false}
+      if(content.isEmpty){S.error("Please provide content describing you offering"); validated = false}
+      if(email.isEmpty){S.error("Please provide an email address"); validated = false}
+      if(link.isEmpty){S.error("Please provide a link to your web address"); validated = false}
+      if(imageId.isEmpty){S.error("Please choose an image for your ad"); validated = false}
+      
+      //validate dates
+      if(!startDate.isEmpty && !endDate.isEmpty){
+        val startD = dateFormatter.parseDateTime(startDate.is)
+        val endD = dateFormatter.parseDateTime(endDate.is)
+        
+        if(startD.compareTo(endD) > 0){ S.error("End date cannot be before start date"); validated = false }
+        newGAd.lifeTime(LifeTime(startD.toDate, endD.toDate))
+      }
+      else{ S.error("Please provide valid dates!"); validated = false }
+      
+      //If validated save the ad and redirect to a preview of it
+      if(validated){
+        newGAd.header(header)
+        .contents(content)
+        .contactInfo(contacts)
+        .email(email)
+        .link(link)
+        .location(LatLong(asDouble(lat).getOrElse(0.0), asDouble(long).getOrElse(0.0)))
+        .userId(User.currentUserId.get.toString)
+        .imageId(imageId)
+        .tags(tags.is.split(",").toList.map(_.toUpperCase) :::
+              punctuationRegex.findAllIn(content).map(_.toUpperCase).filter(!excludeWords.contains(_)).toList)  //get a library to do this better
+        .save
 
-      newGAd.header(header)
-      .contents(content)
-      .contactInfo(contacts)
-      .email(email)
-      .link(link)
-      .location(LatLong(asDouble(lat).get, asDouble(long).get))
-      .lifeTime(LifeTime(dateFormatter.parseDateTime(startDate.get).toDate, dateFormatter.parseDateTime(endDate.get).toDate))
-      .userId(User.currentUserId.get.toString)
-      .imageId(imageId)
-      .tags(tags.is.split(",").toList.map(_.toUpperCase) :::
-            punctuationRegex.findAllIn(content).map(_.toUpperCase).filter(!excludeWords.contains(_)).toList)  //get a library to do this better
-      .save
-
-      S.redirectTo("/generic_ads/view?ad_id="+newGAd._id.toString)
+        S.redirectTo("/generic_ads/view?ad_id="+newGAd._id.toString)
+      }
     }
  
     "name=header" #> (SHtml.textElem(header) ++ SHtml.hidden(() => whence.set(w))) &

@@ -62,9 +62,11 @@ object Search extends Logger{
 
     def process:JsCmd = {
       info("Searching with inputs: lat&long: "+lat+","+long+" distance in degrees: "+degrees+" , from "+startDate+" to "+endDate+", and with query: "+stringQuery)
-      val date = new Date
-      val searchByDegAll = GenericAd where (_.location near (lat, long, Degrees(degrees))) and (_.tags contains stringQuery.toUpperCase) fetch;
-      info("Found results!! "+searchByDegAll.map(_.header))
+
+      val searchByDegAll = stringQuery match{
+        case s:String if(s == null || s.equals("")) => GenericAd where (_.location near (lat, long, Degrees(degrees))) fetch;
+        case _ => GenericAd where (_.location near (lat, long, Degrees(degrees))) and (_.tags contains stringQuery.toUpperCase) fetch;
+      }
       //filter afterwards?? fix somehow
       val searchByDeg = searchByDegAll.filter((a:GenericAd) => {         
           a.lifeTime.is.endDate.compareTo(startDate) >= 0 &&

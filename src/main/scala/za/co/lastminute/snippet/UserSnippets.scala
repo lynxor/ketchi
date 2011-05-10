@@ -2,8 +2,11 @@ package za.co.lastminute.snippet
 
 import  net.liftweb._
 import http._
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import js._
 import JsCmds._
+import com.google.common.io.CharStreams
 import common._
 import org.bson.types.ObjectId
 import util.Helpers._
@@ -13,7 +16,7 @@ import com.foursquare.rogue.Rogue._
 import net.liftweb.util.Mailer
 import Mailer._
     
-object UserSnippets {
+object UserSnippets extends Logger {
 
   def greeting = {
     "#greeting" #> <span>Hello {User.currentUser match {
@@ -63,16 +66,63 @@ object UserSnippets {
   def advertiseRequest = {
     var requestText = "";
     var email = "";
+    var challenge = ""
+    var challengeResponse = ""
 
     
-    "#email" #> SHtml.ajaxText("text", (text:String) => {email = text; Noop}) &
-    "#request_par" #> SHtml.ajaxTextarea("Enter your request details here", (text: String) => {requestText = text; Noop}) &
-    "#request_button" #> SHtml.ajaxButton("Request", () => {
-        sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
-                 PlainMailBodyType("email: "+email+"\n"+"request: "+requestText));
+    "#email" #> SHtml.text("text", (text:String) => {email = text; Noop}) &
+    "#request_par" #> SHtml.textarea("Enter your request details here", (text: String) => {requestText = text; Noop}) &
+    "#challenge" #> SHtml.hidden((s:String) => challenge = s, "") &
+    "#challenge_response" #> SHtml.hidden( (s:String) => challengeResponse = s, "") &
+    "#request_button" #> SHtml.submit("Submit", () => {
+        val verified = verifyCaptcha(challenge, challengeResponse)
+        info("Verified??? "+verified)
+        if(verified){
+          info("Captcha verified!!!!!!!!!!!!!!!")
+          
+          sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
+                   PlainMailBodyType("email: "+email+"\n"+"request: "+requestText));
 
-        SetHtml("request_status", <span style="color: green">Submitted</span>) & Alert("Your request has been submitted. You will receive an answer shortly") ;
+     
+          S.notice("Your request has been submitted successfully")
+          S.redirectTo("/index")
+        }
+        else{
+          S.error("Recaptcha failed")
+        }
       }) 
    
+  }
+
+  import java.io.OutputStreamWriter
+  import java.net.HttpURLConnection
+  import java.net.URL
+    
+  val privateKey = "6Lf6PMQSAAAAADJVlOT8_L_ByeGjOun_uOA5SsiS"
+  val publicKey = "6Lf6PMQSAAAAANYmb-BYDxXHkq1y4IiYBfORxk9Y"
+
+  def verifyCaptcha(challenge: String, response: String) : Boolean = {
+    val url = new URL("http://www.google.com/recaptcha/api/verify")
+    val connection = url.openConnection.asInstanceOf[HttpURLConnection]
+    connection.setDoOutput(true)
+    connection.setRequestMethod("POST")
+    val writer = new OutputStreamWriter(connection.getOutputStream)
+    writer.write("privatekey=" + privateKey)
+    writer.write("&remoteip=" + S.containerRequest.map(_.remoteAddress)
+                 .openOr("localhost"))
+    writer.write("&challenge=" + challenge)
+    writer.write("&response=" + response)
+    writer.flush
+    writer.close
+
+    if (connection.getResponseCode != HttpURLConnection.HTTP_OK) {
+      error("Connection problem to reCaptcha")
+      false	
+    }
+    val httpResponse = CharStreams.toString(new InputStreamReader(connection.getInputStream))
+    httpResponse match {
+      case s:String if(s.trim.contains("true") || s.trim.contains("success")) => true
+      case _ => false
+    }
   }
 }
