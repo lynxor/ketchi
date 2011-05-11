@@ -54,14 +54,13 @@ object ViewStats extends Logger{
 
     val allPlot = ads.map(transformAd(_)).map((x:List[(Double, Double)]) => new FlotSerie(){override val data = x})
 
+    
     val options = new FlotOptions () {
       override val xaxis = Full (new FlotAxisOptions () {
           override val mode = Full ("time")
         })
     }
-
     Flot.render ( "graph", allPlot, options, Flot.script(xhtml))
-
   }
 
 

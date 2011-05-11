@@ -166,7 +166,7 @@
                 numberOfMonths: 3,
                 dateFormat: "yy/mm/dd",
                 onSelect: function( selectedDate ) {
-                    var option = this.id == "startDate" ? "minDate" : "maxDate",
+                    var option = this.id == "start_date" ? "minDate" : "maxDate",
                     instance = $( this ).data( "datepicker" );
                     date = $.datepicker.parseDate(
                     instance.settings.dateFormat ||
@@ -212,7 +212,6 @@
                                 <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                         style="float: right"
                                         role="button"
-                                        area-disabled="false"
                                         onmouseover="hover(this)"
                                         onmouseout="unhover(this)"
                                         onclick="$('#address_search_dialogue').dialog('open');">
@@ -228,7 +227,7 @@
                         <span style="font-size: 22px; padding: 5px">Keyword Search</span>
                     </div>
                     <div style="padding: 10px">
-                        <span>Search:</span> <input id="string_query">
+                        <span>Search:</span> <input id="string_query"><span style="padding-left: 4px;" >Leave empty to search only by location</span>
                     </div>
                     <div class="ui-widget ui-widget-header ui-corner-all ui-state-default" style="display: block; margin-top: 5px">
                         <span style="font-size: 22px; padding: 5px">Time</span>
@@ -256,7 +255,7 @@
         <div id="search_box_compacted" style="display:none"></div>
     </div>
 
-    <div id="search_results">No results</div>
+    <div style="margin-top: 15px; margin-bottom: 15px" id="search_results">No results</div>
 
     <div id="address_search_dialogue" title="Address Search">
         <div class="lift:GeoCodingSnippet.locationFromName" >

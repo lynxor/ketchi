@@ -14,7 +14,7 @@ class FileUpload extends Logger {
   var fileHolder : Box[FileParamHolder] = Empty;
   def render = {
     "name=file" #> SHtml.fileUpload((f) => {Console println("setting fileholder to "+f.toString); fileHolder = Full(f)}) &
-    "type=submit"  #> SHtml.submit("dUpload", () => process)
+    "type=submit"  #> SHtml.submit("Upload", () => process)
     
   }
 

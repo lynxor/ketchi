@@ -7,7 +7,7 @@ div .container{
 }
 
 .borderbox{
-/*    border: 1px #CCCCCC solid;*/
+    /*    border: 1px #CCCCCC solid;*/
     padding: 5px;
 }
 
@@ -96,4 +96,14 @@ input{
 
 #lift__noticesContainer__{
     color: red
+}
+
+.upload { overflow: hidden; position: relative; background: #598026; text-align: center; }
+.upload, .upload_file { width: 200px; height: 40px; cursor: pointer; }
+.upload_file { opacity: 0; filter: alpha(opacity=0); position: absolute; right: 0px; top: 0; font-size: 40px; width: 200px;  }
+.upload span { color: white; line-height: 3em; }
+
+.menu_list {
+    list-style: none;
+    margin-left: 2px;
 }

@@ -70,14 +70,16 @@ object UserSnippets extends Logger {
     var challengeResponse = ""
 
     
+    
     "#email" #> SHtml.text("text", (text:String) => {email = text; Noop}) &
     "#request_par" #> SHtml.textarea("Enter your request details here", (text: String) => {requestText = text; Noop}) &
     "#challenge" #> SHtml.hidden((s:String) => challenge = s, "") &
     "#challenge_response" #> SHtml.hidden( (s:String) => challengeResponse = s, "") &
     "#request_button" #> SHtml.submit("Submit", () => {
-        val verified = verifyCaptcha(challenge, challengeResponse)
-        info("Verified??? "+verified)
-        if(verified){
+        if(email.isEmpty || requestText.isEmpty){
+          S.error("Please fill in all fields")
+        }
+        else if(verifyCaptcha(challenge, challengeResponse)){
           info("Captcha verified!!!!!!!!!!!!!!!")
           
           sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),

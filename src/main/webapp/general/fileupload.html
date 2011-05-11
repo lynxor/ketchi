@@ -1,12 +1,28 @@
 <div id="main" class="lift:surround?with=default&at=content">
-  <div>
-    Upload images
-  </div>
+    <div>
+        <h2>Upload images</h2>
+    </div>
 
-  <div>
-    <form class="lift:FileUpload?form=post&multipart=true">
-      Select image: <input name="file" id="the_file"><br>
-      <input value="Submit" type="submit">
-    </form>
-  </div>
+    <div class="ui-widget ui-widget-content ui-corner-all" style="padding: 15px">
+        <form class="lift:FileUpload?form=post&multipart=true">
+            
+            <div class="upload ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" 
+                 onmouseover="hover(this)"
+                 onmouseout="unhover(this)">
+                
+                <input style="font-size: 40px" name="file" id="the_file" class="upload_file" onchange="$('#upload_text').html(this.value)" width="200px">
+                <span id="upload_text">Select file</span>
+            </div>
+
+            <div style="height: 25px" >
+
+                <input value="Upload" type="submit" 
+                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                       style="float: right; padding: 3px;"
+                       onmouseover="hover(this)"
+                       onmouseout="unhover(this)" />
+
+            </div>
+        </form>
+    </div>
 </div>

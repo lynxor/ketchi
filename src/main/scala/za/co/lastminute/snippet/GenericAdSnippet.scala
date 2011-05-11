@@ -63,6 +63,10 @@ object Search extends Logger{
     def process:JsCmd = {
       info("Searching with inputs: lat&long: "+lat+","+long+" distance in degrees: "+degrees+" , from "+startDate+" to "+endDate+", and with query: "+stringQuery)
 
+      //Validate
+      if(startDate.compareTo(endDate) > 0) return SetHtml("search_results", <span class="error">Your date selection is not valid</span>)
+      if(lat == 0.0 || long == 0.0) return SetHtml("search_results", <span class="error">Please select a valid location</span>)
+
       val searchByDegAll = stringQuery match{
         case s:String if(s == null || s.equals("")) => GenericAd where (_.location near (lat, long, Degrees(degrees))) fetch;
         case _ => GenericAd where (_.location near (lat, long, Degrees(degrees))) and (_.tags contains stringQuery.toUpperCase) fetch;
