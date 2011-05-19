@@ -5,15 +5,17 @@
 
     <div class="ui-widget ui-widget-content ui-corner-all" style="padding: 15px">
         <form class="lift:FileUpload?form=post&multipart=true">
-            
-            <div class="upload ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" 
+
+            <div style="overflow: hidden" class="upload ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" 
                  onmouseover="hover(this)"
                  onmouseout="unhover(this)">
-                
-                <input style="font-size: 40px" name="file" id="the_file" class="upload_file" onchange="$('#upload_text').html(this.value)" width="200px">
+
+                <input style="font-size: 40px" name="file" id="the_file" class="upload_file" onchange="$('#upload_text').html(this.value)" width="200">
                 <span id="upload_text">Select file</span>
             </div>
-
+            <div>
+                <span>Uploads are limited to jpg and gif files.  Maximum file size is 200kb.</span>
+            </div>
             <div style="height: 25px" >
 
                 <input value="Upload" type="submit" 

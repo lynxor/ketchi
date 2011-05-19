@@ -12,12 +12,15 @@ import  _root_.za.co.lastminute.model.generic_ad._
 import java.net.URL
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
+import net.liftweb.http.js.JsCmds.Alert
+import net.liftweb.http.js.jquery.JqJsCmds.ModalDialog
 import net.liftweb.mongodb.DefaultMongoIdentifier
 import net.liftweb.mongodb.MongoAddress
 import net.liftweb.mongodb.MongoDB
 import net.liftweb.mongodb.MongoHost
 import net.liftweb.widgets.flot.Flot
 import net.liftweb.widgets.sparklines.Sparklines
+import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException
 import za.co.lastminute.lib.ImageLogic
 
 
@@ -33,6 +36,9 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("za.co.lastminute")
    
+    def clientFunction = User.loggedIn_? && User.isCurrentUserInRole(User.Client)
+    val notLoggedIn = "You are not logged in"
+    val clientTest = If(() => clientFunction, S ? notLoggedIn)
     // Build SiteMap
     def sitemap() = SiteMap(
      
@@ -45,13 +51,14 @@ class Boot {
       Menu.i("StatsRedirect") / "stats" / "statsredirect" >> Hidden,
       Menu.i("Quick Search") / "general" / "quicksearch" >>Hidden ,
       Menu.i("Error Page") /"static" / "errorpage" >> Hidden,             
-      Menu.i("Upload images") /"general" / "fileupload">> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("List images") /"general" / "listfiles" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("Create a new ad") / "generic_ads" / "create" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
-      Menu.i("View Stats") / "stats" / "viewstats" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Client), S ? "Can't View now") >> LocGroup("client"),
+      Menu.i("Upload images") /"general" / "fileupload">> clientTest >> LocGroup("client"),
+      Menu.i("View your images") /"general" / "listfiles" >> clientTest >> LocGroup("client"),
+      Menu.i("View your ads") /"generic_ads" / "client_listing" >> clientTest >> LocGroup("client"),
+      Menu.i("Create a new ad") / "generic_ads" / "create" >>clientTest >> LocGroup("client"),
+      Menu.i("View Stats") / "stats" / "viewstats" >> clientTest >> LocGroup("client"),
       Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client"),
       Menu.i("Advertise here!") / "user" / "advertiserequest" >> If(() => !User.loggedIn_?, S ? "Can't do for existing user" ) >> LocGroup("client"),
-      Menu.i("GeoCoding test") / "geocode" / "geocode" >> LocGroup("bottom"))
+      Menu.i("GeoCoding test") / "geocode" / "geocode" >> LocGroup("bottom") >> Hidden)
     
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
@@ -82,12 +89,20 @@ class Boot {
     Flot.init
     
     LiftRules.handleMimeFile = OnDiskFileParamHolder.apply
+    LiftRules.maxMimeSize = 200 * 1024// 200kb
 
     LiftRules.early.append(makeUtf8)
 
     LiftRules.htmlProperties.default.set((r: Req) =>
       new Html5Properties(r.userAgent))    
 
+    LiftRules.exceptionHandler.prepend {
+      {
+        case (_, r, t: SizeLimitExceededException) =>
+          
+          RedirectResponse("/general/fileupload?errorMsg="+urlEncode("Could not upload - too large"))
+      }
+    }
   }
 
   /**

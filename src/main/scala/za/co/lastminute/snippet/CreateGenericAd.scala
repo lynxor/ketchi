@@ -113,7 +113,7 @@ object CreateGenericAd{
         .location(LatLong(asDouble(lat).getOrElse(0.0), asDouble(long).getOrElse(0.0)))
         .userId(User.currentUserId.get.toString)
         .imageId(imageId)
-        .tags(tags.is.split(",").toList.map(_.toUpperCase) :::
+        .tags("" :: tags.is.split(",").toList.map(_.toUpperCase) :::
               punctuationRegex.findAllIn(content).map(_.toUpperCase).filter(!excludeWords.contains(_)).toList)  //get a library to do this better
         .save
 

@@ -1,0 +1,3 @@
+# Properties in this file will be read when running in prod mode
+email=admin@ketchi.co.za
+email.password=admin

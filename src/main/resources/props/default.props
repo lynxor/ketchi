@@ -1,1 +1,3 @@
 # Properties in this file will be read when running in dev mode
+email=admin@ketchi.co.za
+email.password=admin

@@ -29,19 +29,47 @@ case class ParamInfo(theParam: String)
 
 object GenericAdSnippet {
   def listAll = "#listing *" #> GenericAd.findAll.map((x: GenericAd) => x.getMarkup)
-}
-
-object View {
-  def toffie : (Elem, Elem) = {
-    S.param("ad_id") match{
-      case a: Box[String] => {
-          GenericAd.find(a.get).map((x) => (x.getMarkup, <a href={"/generic_ads/create?ad_id="+x._id.toString}>{"<< Edit "}</a>)).get
+  
+  def listClient = "#listing *" #> {
+    val ads = GenericAd where (_.userId eqs User.currentUserId.getOrElse("guest")) fetch;
+    ads.map((ad:GenericAd) => clientAdMarkup(Full(ad)))
+  }
+  
+  private def clientAdMarkup(adBox:Box[GenericAd]) = {
+    adBox match{
+      case Full(ad: GenericAd) => {
+          <div class="client_ad ui-corner-all">
+            <div> {ad.getMarkup} </div>
+            <div> {editLinkXml(ad)} </div>
+            <div> {deleteLinkXml(ad)} </div>
+          </div>
         }
-      case _ => (<p>ERROR getting preview</p>, <a href={"/generic_ads/create"}></a>)
+      case _ => <span>No ad</span>
     }
   }
-  def render = "#view_ad *" #> toffie._1 &
-  "#edit_link" #> toffie._2
+  
+  private def editLinkXml(ad:GenericAd) = <div id="edit_ad" class="lift:GenericAdSnippet.editLink" ad_id={ad._id.toString} >Edit ad link here</div>
+  private def deleteLinkXml(ad:GenericAd) = <div id="delete_ad" class="lift:GenericAdSnippet.deleteLink" ad_id={ad._id.toString} >Delete ad link here</div> 
+  
+  def adId(xml:NodeSeq):String = xml \\ "@ad_id" toString
+  
+  def viewAd(xml:NodeSeq) : NodeSeq = {   
+    val ad:Option[GenericAd] = GenericAd where (_._id eqs new ObjectId(S.param("ad_id").getOrElse("no_id"))) get;   
+    "#view_ad" #> clientAdMarkup(ad) apply xml
+  }
+  
+  def deleteLink(incoming:NodeSeq):NodeSeq = {
+    "#delete_ad" #> SHtml.a(() => {
+        GenericAd where (_._id eqs new ObjectId(adId(incoming))) bulkDelete_!!;
+        RedirectTo("/generic_ads/client_listing")
+    }, <span>delete this ad</span>) apply incoming
+  }
+  
+  def editLink(incoming:NodeSeq):NodeSeq = {
+    "#edit_ad" #> SHtml.a(() => {
+        RedirectTo("/generic_ads/create?ad_id="+adId(incoming))
+    }, <span>edit this ad</span>) apply incoming
+  } 
 }
 
 object Search extends Logger{
@@ -75,10 +103,10 @@ object Search extends Logger{
       val searchByDeg = searchByDegAll.filter((a:GenericAd) => {         
           a.lifeTime.is.endDate.compareTo(startDate) >= 0 &&
           a.lifeTime.is.startDate.compareTo(endDate) <= 0
-      })
+        })
           
 
-     // User.storeSearch(LatLong(lat, long))
+      // User.storeSearch(LatLong(lat, long))
       //val searchResults = <span>appel</span>//GenericAd.findAll("location" -> ( "$near" -> List(asDouble(lat).getOrElse(0.0), asDouble(long).getOrElse(0.0) ))~("$maxDistance" -> asDouble(max_distance_input).getOrElse(0.0))).map(_.getMarkup)
       SetHtml("search_results", searchByDeg.map(_.getMarkup))
     }
