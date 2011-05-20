@@ -4,15 +4,19 @@ import  net.liftweb._
 import http._
 import com.foursquare.rogue._
 import com.google.common.base._
+import com.google.common.io.CharStreams
 import common._
 import scala.xml.NodeSeq
 import scala.xml.XML
 import util.Helpers._
 import java.io.InputStreamReader
 import java.net.URL
+import java.net.URLConnection
 import java.net.URLEncoder
 import js._
 import JsCmds._
+import net.liftweb.json._
+import JsonParser._
 
 case class Address(lat:String, long:String, address:String, city:String, state:String, country:String) {
   def toXhtml={
@@ -61,9 +65,10 @@ case class Address(lat:String, long:String, address:String, city:String, state:S
 }
 
 trait GeoCodingService{
-  def findLatLong(address:String, province:String): Seq[Address]
+  def findLatLong(address:String): Seq[Address]
   
 }
+
 class YahooGeoCodingService extends GeoCodingService{
   
 //  <?xml version="1.0"?> 
@@ -84,15 +89,12 @@ class YahooGeoCodingService extends GeoCodingService{
   val appId = "GUMuZ13V34GAe1ejGhJqyT093q.LKc_CUBbPm2VIIOvTlhjMjfItKYxzVi78s71nEKJ23mQ9BtuOZyXodmbuGBw8aNSei7M-"
   val restfulAddress = "http://local.yahooapis.com/MapsService/V1/geocode"
   
-  override def findLatLong(address:String, province:String) : Seq[Address] = {
+  override def findLatLong(address:String) : Seq[Address] = {
     
     val stringUrl:String = restfulAddress + 
     "?appid=" + appId + 
-    "&street=" + URLEncoder.encode(address, Charsets.UTF_8.displayName)+
-    "&state="+URLEncoder.encode(province, Charsets.UTF_8.displayName)
-    
-    
-    
+    "&street=" + URLEncoder.encode(address, Charsets.UTF_8.displayName)
+
     val xmlResult = XML.load(new URL(stringUrl))
     (xmlResult \ "Result").map( (result) => {
         val long = (result \ "Longitude").text
@@ -107,28 +109,61 @@ class YahooGeoCodingService extends GeoCodingService{
   }
   
 }
+
+class GoogleGeoCodingService extends GeoCodingService with Logger{
+  val restfulAddress = "http://maps.googleapis.com/maps/api/geocode/json"
+  
+  override def findLatLong(address: String) : Seq[Address] = {
+    val stringUrl = restfulAddress +"?address="+ URLEncoder.encode(address, Charsets.UTF_8.displayName)+"&sensor=false"
+    
+    info("Requesting URL: "+ stringUrl)
+    
+    val con:URLConnection = new URL(stringUrl).openConnection
+    con.setDoOutput(true)
+    con.getOutputStream.flush
+    con.getOutputStream.close
+    
+    val jsonResponse = CharStreams.toString(new InputStreamReader(con.getInputStream))
+    info(jsonResponse)
+    val parsed = parse(jsonResponse)
+    
+    implicit val formats = DefaultFormats
+    val formattedAddress = (parsed \\ "formatted_address").extract[String]
+    val acomp = (parsed \\ "address_components").extract[List[AddressComponent]]
+    val location = (parsed \\ "location").extract[Location]
+    
+    val emptyAddressComponent = AddressComponent("","",Nil)
+    List(Address(location.lat.toString, location.lng.toString, formattedAddress, 
+            acomp.find( _.types.contains("administrative_area_level_2")).getOrElse(emptyAddressComponent).long_name,
+            acomp.find( _.types.contains("administrative_area_level_1")).getOrElse(emptyAddressComponent).long_name,
+            acomp.find(_.types.contains("country")).getOrElse(emptyAddressComponent).long_name
+          ))
+          
+  }
+}
+
+case class AddressComponent(short_name:String, long_name:String, types: List[String])
+
+case class Location(lat: Double, lng:Double)
+
 object GeoCodingSnippet {
   private object address extends RequestVar("Sandton")
-  private object province extends RequestVar("Gauteng")
-  
+  //private object province extends RequestVar("Gauteng")
+  val service = new GoogleGeoCodingService
   val provinces = List("Gauteng", "Limpopo", "Mpumalanga","North West", "Northern Cape", "Western Cape", "Eastern Cape","Free State", "KwaZulu-Natal")
   
   def locationFromName = {
     "#address" #> SHtml.ajaxTextElem(address) &
-    "#province" #> SHtml.ajaxSelect(provinces.map((prov) => (prov, prov)), Full("Gauteng"), (prov) => { province.apply(prov);Noop}) &
     "#geocode_button" #> SHtml.ajaxButton("Find", () => {
-        val service:GeoCodingService = new YahooGeoCodingService
-        val transformedAddress = service.findLatLong(address, province).map(_.toSearchXhml)
+        val transformedAddress = service.findLatLong(address).map(_.toSearchXhml)
         SetHtml("addressesFound", NodeSeq.fromSeq(transformedAddress.flatMap(_.toList)))
       })
   }
   
   def locationFromNameSetLatLong = {
     "#address" #> SHtml.ajaxTextElem(address) &
-    "#province" #> SHtml.ajaxSelect(provinces.map((prov) => (prov, prov)), Full("Gauteng"), (prov) => { province.apply(prov);Noop}) &
     "#geocode_button" #> SHtml.ajaxButton("Find", () => {
-        val service:GeoCodingService = new YahooGeoCodingService
-        val transformedAddress = service.findLatLong(address, province).map(_.toSetLatLngXhml)
+        val transformedAddress = service.findLatLong(address).map(_.toSetLatLngXhml)
         SetHtml("addressesFound", NodeSeq.fromSeq(transformedAddress.flatMap(_.toList)))
       })
   }

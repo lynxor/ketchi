@@ -17,7 +17,7 @@ import com.foursquare.rogue.LatLong
 import za.co.lastminute.model.User
 
 
-object CreateGenericAd{
+object CreateGenericAd {
   private val dateFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy/MM/dd");
   private val excludeWords = List("THE", "OR", "AND", "IN")  //Get a list somewhere
   private val punctuationRegex  = new Regex("[\\w]+")

@@ -40,7 +40,10 @@ class StatsRedirect extends Logger{
         }
       case None => RedirectTo("/static/errorpage")
     }
-    S.redirectTo(link);
+    if(link.startsWith("http://"))
+      S.redirectTo(link);
+    else
+      S.redirectTo("http://"+link)
   }
 }
 

@@ -1,0 +1,32 @@
+<div class="lift:surround?with=default;at=content">
+
+    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+    <script type="text/javascript" src="../js/myRecaptcha.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            initReCaptcha()
+        });
+    </script>
+
+    <form class="lift:UserSnippets.signupReCaptcha?form=post" onsubmit="setHidden();">
+        <div class="ui-widget ui-widget-content ui-corner-all" style="padding: 15px" >
+            <div class="ui-widget ui-widget-header ui-corner-all" style="display: block" >
+                <span style="font-size: 22px; padding: 5px">Just confirm you're human</span>
+            </div>
+            <div id="recaptcha_div" >Loading recaptcha ...</div>
+            
+            <div style="height: 25px;">
+                <input id="request_button"
+                       type="submit"
+                       style="float: right; padding: 3px;"
+                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                       onmouseover="hover(this)"
+                       onmouseout="unhover(this)"/>
+
+                <input id="challenge" />
+                <input id="challenge_response" />
+            </div>
+        </div>
+    </form>
+</div>

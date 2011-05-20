@@ -47,9 +47,10 @@ class Boot {
       Menu.i("Contact") / "static" / "contact" >>LocGroup("bottom"),
       Menu.i("Search") / "general" / "search"  >> LocGroup("search"),
       Menu.i("Listing") / "generic_ads" / "listing" >> LocGroup("search") ,
+      Menu.i("SignupRecaptcha") / "user" / "signup_recaptcha" >> Hidden,
       Menu.i("View") / "generic_ads" / "view" >> Hidden,
       Menu.i("StatsRedirect") / "stats" / "statsredirect" >> Hidden,
-      Menu.i("Quick Search") / "general" / "quicksearch" >>Hidden ,
+      Menu.i("Quick Search") / "general" / "quicksearch" >> Hidden ,
       Menu.i("Error Page") /"static" / "errorpage" >> Hidden,             
       Menu.i("Upload images") /"general" / "fileupload">> clientTest >> LocGroup("client"),
       Menu.i("View your images") /"general" / "listfiles" >> clientTest >> LocGroup("client"),
@@ -58,7 +59,7 @@ class Boot {
       Menu.i("View Stats") / "stats" / "viewstats" >> clientTest >> LocGroup("client"),
       Menu.i("Admin") / "user" /"admin" >> If(() => User.loggedIn_? && User.isCurrentUserInRole(User.Admin), S ? "Has to be admin" ) >> LocGroup("client"),
       Menu.i("Advertise here!") / "user" / "advertiserequest" >> If(() => !User.loggedIn_?, S ? "Can't do for existing user" ) >> LocGroup("client"),
-      Menu.i("GeoCoding test") / "geocode" / "geocode" >> LocGroup("bottom") >> Hidden)
+      Menu.i("GeoCoding test") / "geocode" / "geocode" >> Hidden)
     
     LiftRules.setSiteMapFunc(() => User.sitemapMutator(sitemap()))
 
@@ -70,8 +71,9 @@ class Boot {
     logUrl.foreach((x:URL) => Logger.setup = Full(Logback.withFile(x)))
 
     //EMAIL
-    configMailer("mail.ketchi.co.za", "dawid.malan@ketchi.co.za", "wh")
-    
+    configMailer(Props.get("email.server", "mail.ketchi.co.za"),
+                 Props.get("email", "admin@ketchi.co.za"),
+                 Props.get("email.password", "admin")); 
     /*
      * Show the spinny image when an Ajax call starts
      */

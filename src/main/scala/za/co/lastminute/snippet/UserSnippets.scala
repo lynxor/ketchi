@@ -8,6 +8,7 @@ import js._
 import JsCmds._
 import com.google.common.io.CharStreams
 import common._
+import net.liftweb.util.Props
 import org.bson.types.ObjectId
 import util.Helpers._
 
@@ -63,6 +64,7 @@ object UserSnippets extends Logger {
     "name=promote_selected" #> SHtml.ajaxButton("Promote selected", () => promoteUser)
   }
 
+  
   def advertiseRequest = {
     var requestText = "";
     var email = "";
@@ -79,13 +81,11 @@ object UserSnippets extends Logger {
         if(email.isEmpty || requestText.isEmpty){
           S.error("Please fill in all fields")
         }
-        else if(verifyCaptcha(challenge, challengeResponse)){
-          info("Captcha verified!!!!!!!!!!!!!!!")
-          
-          sendMail(From("admin@ketchi.co.za"), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
+        else if(ReCaptchaUtil.verifyCaptcha(challenge, challengeResponse)){
+          signupRecaptchaPasses.set("true")
+          sendMail(From(Props.get("email", "admin@ketchi.co.za")), Subject("Request for advertising"), To("dawid.malan@ketchi.co.za"),
                    PlainMailBodyType("email: "+email+"\n"+"request: "+requestText));
 
-     
           S.notice("Your request has been submitted successfully")
           S.redirectTo("/index")
         }
@@ -95,36 +95,29 @@ object UserSnippets extends Logger {
       }) 
    
   }
+  
+  private object signupRecaptchaPasses extends SessionVar("false")
+  
+  def passedReCaptcha:Boolean = signupRecaptchaPasses.is.equals("true")
 
-  import java.io.OutputStreamWriter
-  import java.net.HttpURLConnection
-  import java.net.URL
+  def signupReCaptcha = {
+
+    var challenge = ""
+    var challengeResponse = ""
     
-  val privateKey = "6Lf6PMQSAAAAADJVlOT8_L_ByeGjOun_uOA5SsiS"
-  val publicKey = "6Lf6PMQSAAAAANYmb-BYDxXHkq1y4IiYBfORxk9Y"
-
-  def verifyCaptcha(challenge: String, response: String) : Boolean = {
-    val url = new URL("http://www.google.com/recaptcha/api/verify")
-    val connection = url.openConnection.asInstanceOf[HttpURLConnection]
-    connection.setDoOutput(true)
-    connection.setRequestMethod("POST")
-    val writer = new OutputStreamWriter(connection.getOutputStream)
-    writer.write("privatekey=" + privateKey)
-    writer.write("&remoteip=" + S.containerRequest.map(_.remoteAddress)
-                 .openOr("localhost"))
-    writer.write("&challenge=" + challenge)
-    writer.write("&response=" + response)
-    writer.flush
-    writer.close
-
-    if (connection.getResponseCode != HttpURLConnection.HTTP_OK) {
-      error("Connection problem to reCaptcha")
-      false	
-    }
-    val httpResponse = CharStreams.toString(new InputStreamReader(connection.getInputStream))
-    httpResponse match {
-      case s:String if(s.trim.contains("true") || s.trim.contains("success")) => true
-      case _ => false
-    }
+    "#challenge" #> SHtml.hidden((s:String) => challenge = s, "") &
+    "#challenge_response" #> SHtml.hidden( (s:String) => challengeResponse = s, "") &
+    "#request_button" #> SHtml.submit("Submit", () => {    
+        if(ReCaptchaUtil.verifyCaptcha(challenge, challengeResponse)){
+          signupRecaptchaPasses.set("true");
+          S.redirectTo("/user_mgt/sign_up")
+        }
+        else{
+          S.error("Recaptcha failed")
+        }
+      }) 
+    
   }
+
+ 
 }
