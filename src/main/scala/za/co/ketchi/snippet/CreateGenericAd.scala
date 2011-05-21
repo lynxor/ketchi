@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import  net.liftweb._
 import http._
@@ -12,9 +12,9 @@ import JE._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import za.co.lastminute.model.generic_ad._
+import za.co.ketchi.model.generic_ad._
 import com.foursquare.rogue.LatLong
-import za.co.lastminute.model.User
+import za.co.ketchi.model.User
 
 
 object CreateGenericAd {

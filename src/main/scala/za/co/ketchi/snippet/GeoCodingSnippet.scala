@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import  net.liftweb._
 import http._
@@ -15,8 +15,8 @@ import java.net.URLConnection
 import java.net.URLEncoder
 import js._
 import JsCmds._
+
 import net.liftweb.json._
-import JsonParser._
 
 case class Address(lat:String, long:String, address:String, city:String, state:String, country:String) {
   def toXhtml={
@@ -54,7 +54,7 @@ case class Address(lat:String, long:String, address:String, city:String, state:S
       <input type="button" 
         class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
         style="padding: 3px"
-        onclick={"$('#the_lat').val('"+lat+"');$('#the_long').val('"+long+"');"}
+        onclick={"updateLocation("+lat+","+long+"); closeDialogue();"}
         onmouseover="hover(this)"
         onmouseout="unhover(this)"
         value="Set location">
@@ -69,7 +69,7 @@ trait GeoCodingService{
   
 }
 
-class YahooGeoCodingService extends GeoCodingService{
+object YahooGeoCodingService extends GeoCodingService{
   
 //  <?xml version="1.0"?> 
 //<ResultSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:yahoo:maps" xsi:schemaLocation="urn:yahoo:maps http://local.yahooapis.com/MapsService/V1/GeocodeResponse.xsd">
@@ -110,7 +110,7 @@ class YahooGeoCodingService extends GeoCodingService{
   
 }
 
-class GoogleGeoCodingService extends GeoCodingService with Logger{
+object GoogleGeoCodingService extends GeoCodingService with Logger{
   val restfulAddress = "http://maps.googleapis.com/maps/api/geocode/json"
   
   override def findLatLong(address: String) : Seq[Address] = {
@@ -126,30 +126,43 @@ class GoogleGeoCodingService extends GeoCodingService with Logger{
     val jsonResponse = CharStreams.toString(new InputStreamReader(con.getInputStream))
     info(jsonResponse)
     val parsed = parse(jsonResponse)
-    
+    fromJSON(parsed)
+   
+  }
+  
+  def fromJSON(parsed: JValue):List[Address] = {
     implicit val formats = DefaultFormats
-    val formattedAddress = (parsed \\ "formatted_address").extract[String]
-    val acomp = (parsed \\ "address_components").extract[List[AddressComponent]]
-    val location = (parsed \\ "location").extract[Location]
+    val status = (parsed \ "status").extract[String]
     
-    val emptyAddressComponent = AddressComponent("","",Nil)
-    List(Address(location.lat.toString, location.lng.toString, formattedAddress, 
-            acomp.find( _.types.contains("administrative_area_level_2")).getOrElse(emptyAddressComponent).long_name,
-            acomp.find( _.types.contains("administrative_area_level_1")).getOrElse(emptyAddressComponent).long_name,
-            acomp.find(_.types.contains("country")).getOrElse(emptyAddressComponent).long_name
-          ))
-          
+    status match{
+      case "OK" => info("Request to geocoding completed with status: "+status)
+      case _ => {error("Could not complete geocoding requeset"); Nil}
+    }
+    val results = (parsed \ "results").extract[List[GeoResult]]
+    results.map( _.getAddress)
   }
 }
 
-case class AddressComponent(short_name:String, long_name:String, types: List[String])
+case class GeoResult(types: List[String], formatted_address:String, address_components: List[AddressComponent], geometry:Geometry){
+  val emptyAddressComponent = AddressComponent("","",Nil)
+  def lat = geometry.location.lat
+  def lng = geometry.location.lng
+  
+  def city = address_components.find( _.types.contains("administrative_area_level_2")).getOrElse(emptyAddressComponent).long_name
+  def state = address_components.find( _.types.contains("administrative_area_level_1")).getOrElse(emptyAddressComponent).long_name
+  def country = address_components.find( _.types.contains("country")).getOrElse(emptyAddressComponent).long_name
+  
+  def getAddress = Address(lat.toString, lng.toString, formatted_address, city, state, country)
+}
 
+case class AddressComponent(short_name:String, long_name:String, types: List[String])
 case class Location(lat: Double, lng:Double)
+case class Geometry(location:Location)
 
 object GeoCodingSnippet {
   private object address extends RequestVar("Sandton")
   //private object province extends RequestVar("Gauteng")
-  val service = new GoogleGeoCodingService
+  val service = GoogleGeoCodingService
   val provinces = List("Gauteng", "Limpopo", "Mpumalanga","North West", "Northern Cape", "Western Cape", "Eastern Cape","Free State", "KwaZulu-Natal")
   
   def locationFromName = {

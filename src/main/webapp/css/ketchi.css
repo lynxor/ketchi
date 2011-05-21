@@ -30,15 +30,11 @@ div .container{
     width: 300px;
 }
 .content_box {
-    color: #444444;
     border-style: solid;
     border-width: 2px;
     border-color: #DDDDDD;
-    /*    background-image: url(../images/box_gradient.png);*/
-    background-repeat: repeat-x;
     margin: 3px;
     padding: 10px;
-    font-family: courier;
 }
 
 .comment_box{
@@ -51,14 +47,6 @@ div .container{
 .button{
     float: right;
     color: #DDDDDD
-}
-
-a{
-    color: #DDDDDD;
-}
-input{
-    color: #555555;
-    border-color: #DDDDDD;
 }
 
 .pleasenote{

@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import  net.liftweb._
 import http._
@@ -7,7 +7,7 @@ import common._
 import util.Helpers._
 import mongodb._
 import com.mongodb.gridfs._
-import za.co.lastminute.model.User
+import za.co.ketchi.model.User
 
 
 class FileUpload extends Logger {

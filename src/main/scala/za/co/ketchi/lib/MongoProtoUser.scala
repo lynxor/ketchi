@@ -1,4 +1,4 @@
-package za.co.lastminute.lib
+package za.co.ketchi.lib
 
 import _root_.scala.xml.{NodeSeq, Node, Text, Elem}
 import net.liftweb.mongodb.record.field.MongoPasswordField

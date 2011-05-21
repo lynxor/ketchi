@@ -7,8 +7,8 @@ import _root_.net.liftweb.http.provider._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import Helpers._
-import _root_.za.co.lastminute.model.User
-import  _root_.za.co.lastminute.model.generic_ad._
+import _root_.za.co.ketchi.model.User
+import  _root_.za.co.ketchi.model.generic_ad._
 import java.net.URL
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
@@ -21,7 +21,7 @@ import net.liftweb.mongodb.MongoHost
 import net.liftweb.widgets.flot.Flot
 import net.liftweb.widgets.sparklines.Sparklines
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException
-import za.co.lastminute.lib.ImageLogic
+import za.co.ketchi.lib.ImageLogic
 
 
 /**
@@ -34,7 +34,7 @@ class Boot {
     MongoDB.defineDb(DefaultMongoIdentifier, MongoAddress(MongoHost("localhost", 27017), "test_direct"))
     
     // where to search snippet
-    LiftRules.addToPackages("za.co.lastminute")
+    LiftRules.addToPackages("za.co.ketchi")
    
     def clientFunction = User.loggedIn_? && User.isCurrentUserInRole(User.Client)
     val notLoggedIn = "You are not logged in"
@@ -46,7 +46,7 @@ class Boot {
       Menu.i("Help") / "static"  / "help" >> LocGroup("bottom"),
       Menu.i("Contact") / "static" / "contact" >>LocGroup("bottom"),
       Menu.i("Search") / "general" / "search"  >> LocGroup("search"),
-      Menu.i("Listing") / "generic_ads" / "listing" >> LocGroup("search") ,
+      Menu.i("List all ads") / "generic_ads" / "listing" >> LocGroup("search") ,
       Menu.i("SignupRecaptcha") / "user" / "signup_recaptcha" >> Hidden,
       Menu.i("View") / "generic_ads" / "view" >> Hidden,
       Menu.i("StatsRedirect") / "stats" / "statsredirect" >> Hidden,

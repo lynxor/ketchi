@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import java.util.Arrays
 import java.util.Collections
@@ -16,7 +16,7 @@ import net.liftweb.mongodb.MongoDB
 import scala.xml.NodeSeq
 import util._
 import Helpers._
-import za.co.lastminute.model.User
+import za.co.ketchi.model.User
 import org.bson.types.ObjectId
 import scala.collection.JavaConversions._
 

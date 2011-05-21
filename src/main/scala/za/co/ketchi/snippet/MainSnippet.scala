@@ -1,4 +1,4 @@
-package za.co.lastminute {
+package za.co.ketchi {
   package snippet {
 
     import _root_.scala.xml.{NodeSeq, Text}
@@ -7,8 +7,8 @@ package za.co.lastminute {
     import common._
     import util.Helpers._
     import _root_.java.util.Date
-    import za.co.lastminute.lib._
-    import za.co.lastminute.model.User;
+    import za.co.ketchi.lib._
+    import za.co.ketchi.model.User;
     import com.foursquare.rogue.Rogue._
 
     object MainSnippet {

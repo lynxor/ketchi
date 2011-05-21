@@ -1,4 +1,4 @@
-package za.co.lastminute.model.generic_ad
+package za.co.ketchi.model.generic_ad
 
 import java.util.Date
 import net.liftweb.mapper._

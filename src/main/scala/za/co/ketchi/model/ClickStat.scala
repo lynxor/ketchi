@@ -1,4 +1,4 @@
-package za.co.lastminute.model
+package za.co.ketchi.model
 
 import java.util.Date
 import net.liftweb.mongodb.JsonObject

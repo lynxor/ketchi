@@ -6,6 +6,7 @@
     <div>
         <script>
             var map = null;
+            var my_marker = null;
 
             //Initialise the datepicker
             $(function() {
@@ -40,6 +41,25 @@
 
                
             });
+            
+            function MyMarker(map){
+                this.set('map', map);
+                this.set('position', map.getCenter());
+
+                var marker = new google.maps.Marker({
+                    draggable: true,
+                    title: 'Move me!'
+                });
+                google.maps.event.addListener(marker, 'dragend', function(event){
+                    $("#the_lat").val(event.latLng.lat());
+                    $("#the_long").val(event.latLng.lng());
+                });
+                marker.bindTo('map', this);
+                marker.bindTo('position', this);
+            }
+            
+            MyMarker.prototype = new google.maps.MVCObject();
+            
             function initMaps(){
                 var latlng = new google.maps.LatLng(-26.195308, 28.043861);
                 var myOptions = {
@@ -48,16 +68,22 @@
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-                google.maps.event.addListener(map, 'click', function(event) {
-                    $("#the_lat").val(event.latLng.lat());
-                    $("#the_long").val(event.latLng.lng());
-                    //placeMarker(event.latLng)
-                });
-
-
+                my_marker = new MyMarker(map)
             }
-
+            
+            function updateLocation(lat, lng){
+                $("#the_lat").val(lat);
+                $("#the_long").val(lng);
+                
+                var position = new google.maps.LatLng(lat, lng);
+                my_marker.set('position', position);
+                map.setCenter(position);
+            }
+            
+            function closeDialogue(){
+                $("#address_search_dialogue").dialog("close");
+            }
+            
             $("#map_canvas").ready(function(){               
                 initMaps()
             })
@@ -115,7 +141,7 @@
                     <div id="address_search_dialogue" title="Find address" >
                         <div class="lift:GeoCodingSnippet.locationFromNameSetLatLong" >
                             <div style="padding: 15px">
-                                Address <input id="address" ><br>
+                                Address <input id="address" style="width: 330px" ><br>
                                 <input id="geocode_button" 
                                        class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                        style="padding: 3px"

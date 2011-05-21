@@ -1,4 +1,4 @@
-package za.co.lastminute.model {
+package za.co.ketchi.model {
 
 
 
@@ -19,12 +19,12 @@ package za.co.lastminute.model {
   import net.liftweb.record.field.StringField
   import scala.xml.NodeSeq
   import scala.xml.Text
-  import za.co.lastminute.lib._
+  import za.co.ketchi.lib._
   import java.util.Date
   import net.liftweb.http._
   import com.foursquare.rogue.LatLong
   import com.foursquare.rogue.Rogue._
-  import za.co.lastminute.snippet.UserSnippets
+  import za.co.ketchi.snippet.UserSnippets
   import net.liftweb.util._
   import Helpers._
 

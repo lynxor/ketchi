@@ -5,15 +5,13 @@
 
   
     <modelVersion>4.0.0</modelVersion>
-    <groupId>daaf</groupId>
-    <artifactId>lastminute</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>lastminute Project</name>
+    <name>Ketchi Project</name>
     <inceptionYear>2010</inceptionYear>
     <properties>
         <scala.version>2.8.1</scala.version>
-        <lift.version>2.2</lift.version>
+        <lift.version>2.3</lift.version>
     <!-- Common plugin settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
@@ -69,6 +67,19 @@
             <scope>test</scope>
         </dependency>
     
+        <dependency>
+            <groupId>org.specs2</groupId> 
+            <artifactId>specs2_${scala.version}</artifactId> 
+            <version>1.3</version> 
+        </dependency>
+        
+         <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
@@ -129,7 +140,7 @@
         <dependency>
             <artifactId>rogue_${scala.version}</artifactId>
             <groupId>com.foursquare</groupId>
-            <version>1.0.6</version>
+            <version>1.0.8</version>
         </dependency>
     </dependencies>
 
@@ -234,4 +245,6 @@
             </plugin>
         </plugins>
     </reporting>
+    <artifactId>ketchi</artifactId>
+    <groupId>za.co.ketchi</groupId>
 </project>

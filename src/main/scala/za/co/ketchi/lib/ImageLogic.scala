@@ -1,4 +1,4 @@
-package za.co.lastminute.lib
+package za.co.ketchi.lib
 
 import net.liftweb.http._
 import net.liftweb.mapper._

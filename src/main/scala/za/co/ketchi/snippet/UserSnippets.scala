@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import  net.liftweb._
 import http._
@@ -12,7 +12,7 @@ import net.liftweb.util.Props
 import org.bson.types.ObjectId
 import util.Helpers._
 
-import za.co.lastminute.model.User;
+import za.co.ketchi.model.User;
 import com.foursquare.rogue.Rogue._
 import net.liftweb.util.Mailer
 import Mailer._

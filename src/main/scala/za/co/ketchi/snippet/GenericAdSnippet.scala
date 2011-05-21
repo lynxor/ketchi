@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import _root_.scala.xml.{NodeSeq, Text}
 import _root_.net.liftweb.util._
@@ -12,8 +12,8 @@ import org.joda.time.format.DateTimeFormatter
 import scala.xml.Elem
 import scala.xml.Node
 import scala.xml.NodeBuffer
-import za.co.lastminute.model._
-import za.co.lastminute.model.generic_ad._
+import za.co.ketchi.model._
+import za.co.ketchi.model.generic_ad._
 import Helpers._
 import java.util.Date
 import  js._

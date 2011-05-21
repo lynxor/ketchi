@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 
 import _root_.net.liftweb.util._
@@ -13,8 +13,8 @@ import net.liftweb.widgets.sparklines._
 import org.bson.types.ObjectId
 import org.joda.time._
 import scala.xml.NodeSeq
-import za.co.lastminute.model._
-import za.co.lastminute.model.generic_ad._
+import za.co.ketchi.model._
+import za.co.ketchi.model.generic_ad._
 import net.liftweb.http.js._
 import JE._
 import net.liftweb.json.JsonDSL._

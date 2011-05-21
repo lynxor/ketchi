@@ -1,4 +1,4 @@
-package za.co.lastminute.snippet
+package za.co.ketchi.snippet
 
 import com.google.common.io.CharStreams
 import java.io.InputStreamReader
