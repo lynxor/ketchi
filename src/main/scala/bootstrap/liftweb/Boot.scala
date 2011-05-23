@@ -9,6 +9,8 @@ import _root_.net.liftweb.sitemap.Loc._
 import Helpers._
 import _root_.za.co.ketchi.model.User
 import  _root_.za.co.ketchi.model.generic_ad._
+import java.io.File
+import java.io.FileInputStream
 import java.net.URL
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
@@ -69,6 +71,13 @@ class Boot {
     //LOGGING
     val logUrl = LiftRules.getResource("/logconfig.xml")
     logUrl.foreach((x:URL) => Logger.setup = Full(Logback.withFile(x)))
+
+    
+    val localFile = () => {
+      val file = new File("/opt/ketchi/config/production.props")
+      if (file.exists) Full(new FileInputStream(file)) else Empty
+    }
+    Props.whereToLook = () => (("local", localFile) :: Nil)
 
     //EMAIL
     configMailer(Props.get("email.server", "mail.ketchi.co.za"),

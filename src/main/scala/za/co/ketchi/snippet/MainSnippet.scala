@@ -10,6 +10,8 @@ package za.co.ketchi {
     import za.co.ketchi.lib._
     import za.co.ketchi.model.User;
     import com.foursquare.rogue.Rogue._
+      import net.liftweb.util._
+  import Helpers._
 
     object MainSnippet {
   
@@ -20,7 +22,8 @@ package za.co.ketchi {
           case _ => "hidden"
         })
 
-     
+      var testValue = ""
+      def test = "whatever:pof" #> ((n: NodeSeq) => {testValue = (n \ "@value").toString; n})
     }
   }
 }
